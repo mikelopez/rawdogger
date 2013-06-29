@@ -4,11 +4,11 @@ class Galleries(models.Model):
     """ Will consist of a gallery instance
     Whether it be hosted, or local galler
     
-     - if local gallery, overwrite target_link to 
+    - if local gallery, overwrite target_link to 
     an internal link since we will be hosting
     the galleries content.
     
-     - if hosted gallery, we log the target link
+    - if hosted gallery, we log the target link
     and the program type to which the target 
     pertains to
     """
