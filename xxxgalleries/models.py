@@ -4,11 +4,11 @@ class Galleries(models.Model):
     """ Will consist of a gallery instance
     Whether it be hosted, or local galler
     
-    - if local gallery, overwrite target_link to 
+     - if local gallery, overwrite target_link to 
     an internal link since we will be hosting
     the galleries content.
     
-    - if hosted gallery, we log the target link
+     - if hosted gallery, we log the target link
     and the program type to which the target 
     pertains to
     """
@@ -18,13 +18,13 @@ class Providers(models.Model):
     """ Lets keep track of the providers that
     we will be dealing with.
     
-    - name
-    - username
-    - password
-    - website (optional)
-    - login url (optional)
-    - ccbill (optional)
-    - notes
+     - name
+     - username
+     - password
+     - website (optional)
+     - login url (optional)
+     - ccbill (optional)
+     - notes
     """
     pass
 
