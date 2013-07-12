@@ -1,4 +1,4 @@
-# Django settings for xxxgalleries project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -6,6 +6,8 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
+
+PROJECT_ROOTDIR = os.path.realpath(os.path.dirname(__file__))
 
 MANAGERS = ADMINS
 
