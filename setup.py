@@ -11,7 +11,7 @@ setup(
     author_email='',
     url='',
     license='MIT',
-    package_dir={'DJANGO_APP_FOLDER_NAME': 'DJANGO_APP_FOLDER_NAME'},
+    package_dir={'xxxgalleries': 'xxxgalleries'},
     include_package_data=True,
     packages=find_packages(),
     classifiers=[
