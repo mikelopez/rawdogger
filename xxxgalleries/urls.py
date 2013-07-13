@@ -5,7 +5,7 @@ from xxxgalleries.views import IndexView, GalleryView, GalleryDetailView, \
         CreateGallery, UpdateGallery
 
 urlpatterns = patterns('',
-    url(r'^$', CreateGallery.as_view(), name="xxx-index"),
+    url(r'^$', GalleryView.as_view(), name="xxx-index"),
     url(r'^gallery/add', CreateGallery.as_view(), name="galleries-add"),
     url(r'^gallery/update', UpdateGallery.as_view(), name="galleries-update"),
     url(r'^gallery/', GalleryView.as_view(), name="galleries-view"),
