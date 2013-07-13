@@ -7,7 +7,8 @@ media galleries from xxx advertisers
 
 Setup
 -----
-* enable ``'django.template.loaders.eggs.Loader'`` in ``TEMPLATE_LOADERS`` in your ``settings.py`` file
+* enable ``'django.template.loaders.eggs.Loader'`` in ``TEMPLATE_LOADERS`` in your ``settings.py`` file.
+* Add ``xxxgalleries`` to ``INSTALLED_APPS`` in your ``settings.py`` file.
 * Add ``url(r'^xxxgalleries/', include('xxxgalleries.urls')),`` to your projects urls.py file
 
 Media Files
