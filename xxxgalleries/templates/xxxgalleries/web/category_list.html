@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+
+{% block heading %}Categories{% endblock %}
+{% block action_button_text %}New Category{% endblock %}
+{% block action_button_href %}{% url 'categories-add' %}{% endblock %}
+
+
+{% block table_list %}
+
+  <table style="width:100%;" class="table table-bordered">
+    <tr><td>Name</td><td>Description</td></tr>
+    {% for i in object_list %}
+    <tr>
+      <td>{{ i.name }} </td>
+      <td>{{ i.description }}</td>
+    </tr>
+    {% endfor %}
+   </table>
+
+{% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="New Category" 
+                onclick="window.location='{% url 'categories-add' %}';"/>
+{% endblock %}

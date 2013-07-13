@@ -5,7 +5,7 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    # url(r'^xxxgalleries/', include('xxxgalleries.urls')),
+    url(r'^xxxgalleries/', include('xxxgalleries.urls')),
     
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

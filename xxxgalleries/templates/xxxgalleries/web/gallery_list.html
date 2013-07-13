@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block heading %}Galleries{% endblock %}
+
+{% block table_list %}
+
+  <table class="table table-bordered" style="width:100%;">
+    <tr><td>Name</td><td>Category</td><td>Description</td></tr>
+    {% for i in object_list %}
+    <tr>
+      <td>{{ i.name }} </td>
+      <td>{{ i.category }} </td>
+      <td>{{ i.description }}</td>
+    </tr>
+    {% endfor %}
+   </table>
+
+ {% endblock %}
+
+
+ {% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Add Gallery" 
+                onclick="window.location='{% url 'galleries-add' %}';"/>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block heading %}Gallery: {{object.name}}{% endblock %}
+
+
+{% block detail_view %}
+    Category: {{object.category}}<hr />
+    Link: {{object.location}}
+
+{% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Back to Galleries" 
+                onclick="window.location='{% url 'galleries-view' %}';"/>
+{% endblock %}
+
