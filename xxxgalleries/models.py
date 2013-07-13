@@ -1,6 +1,6 @@
 from django.db import models
 
-class Galleries(models.Model):
+class Gallery(models.Model):
     """ Will consist of a gallery instance
     Whether it be hosted, or local galler
     
