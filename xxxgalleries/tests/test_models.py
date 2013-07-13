@@ -24,7 +24,7 @@ class TestModelBase(TestCase):
         'Providers': [
             '',
         ],
-        'Galleries': [
+        'Gallery': [
             '',
         ],
         'ProgramTypes': [
