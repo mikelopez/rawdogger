@@ -41,7 +41,6 @@
                   <ul class="nav">
                     <li class="active"><a href="#">Home</a></li>
                     <li><a href="{% url 'galleries-view' %}">Galleries</a></li>
-                    <li><a href="{% url 'categories-view' %}">Categories</a></li>
                     <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Add Stuff <b class="caret"></b></a>
                       <ul class="dropdown-menu">
@@ -90,7 +89,6 @@
             {% block error_notification %}{% endblock %}
 
             <form action="{% block form_submit_to %}#{% endblock %}" method="POST"> {% csrf_token %}
-                {% block add_category_form %} {% endblock %}
                 {% block add_gallery_form %} {% endblock %}
             </form>
 

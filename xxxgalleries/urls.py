@@ -1,9 +1,11 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 
+from xxxgalleries.views import IndexView, GalleryView, GalleryDetailView, \
+        CreateGallery, UpdateGallery
 
 urlpatterns = patterns('',
-    #url(r'^$', 'xxxgalleries.xxxgalleries.views.main_index', name='main_index'),
+    url(r'^$', CreateGallery.as_view(), name="xxx-index"),
     url(r'^gallery/add', CreateGallery.as_view(), name="galleries-add"),
     url(r'^gallery/update', UpdateGallery.as_view(), name="galleries-update"),
     url(r'^gallery/', GalleryView.as_view(), name="galleries-view"),
