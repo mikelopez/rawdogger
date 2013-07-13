@@ -10,6 +10,9 @@ Setup
 * enable ``'django.template.loaders.eggs.Loader'`` in ``TEMPLATE_LOADERS`` in your ``settings.py`` file
 * Add ``url(r'^xxxgalleries/', include('xxxgalleries.urls')),`` to your projects urls.py file
 
+Media Files
+------------
+You can use the media files from demoproject/static
 
 Todo
 ====
