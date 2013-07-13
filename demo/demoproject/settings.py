@@ -1,4 +1,5 @@
 import os
+import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -8,6 +9,8 @@ ADMINS = (
 )
 
 PROJECT_ROOTDIR = os.path.realpath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(PROJECT_ROOTDIR, ''))
+#sys.path.insert(1, os.path.join(PROJECT_ROOTDIR, 'apps'))
 
 MANAGERS = ADMINS
 
@@ -69,6 +72,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    "%s/static" % PROJECT_ROOTDIR
 )
 
 # List of finder classes that know how to find static files in

@@ -1,5 +1,8 @@
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
+from django.shortcuts import render
+from models import Gallery
+#from forms import GalleryForm, CategoryForm
 
-# Create your views here.
 class IndexView(TemplateView):
     """ About Page View """
     template_name = "index.html"

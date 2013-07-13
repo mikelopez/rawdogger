@@ -10,6 +10,7 @@ Setup
 * enable ``'django.template.loaders.eggs.Loader'`` in ``TEMPLATE_LOADERS`` in your ``settings.py`` file.
 * Add ``xxxgalleries`` to ``INSTALLED_APPS`` in your ``settings.py`` file.
 * Add ``url(r'^xxxgalleries/', include('xxxgalleries.urls')),`` to your projects urls.py file
+* Add directory to ``STATICFILES_DIRS`` which is by default ``"%s/static" % PROJECT_ROOTDIR,``
 
 Media Files
 ------------
