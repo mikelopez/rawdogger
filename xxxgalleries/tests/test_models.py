@@ -13,7 +13,7 @@ from xxxgalleries.models import *
 from django.contrib.auth.models import *
 from decimal import Decimal
 
-class TestModelBase(TestCase):
+class TestBaseModels(TestCase):
     """
     Test the web/models schema  
     Create the groups and Users 
@@ -22,13 +22,23 @@ class TestModelBase(TestCase):
     # Captain, Owner, Renter
     table_columns = {
         'Providers': [
-            '',
+            'name',
+            'username',
+            'password',
+            'website',
+            'login_url',
+            'ccbill',
+            'notes'
         ],
         'Gallery': [
-            '',
+            'name',
+            'gallery_type',
+            'provider'
         ],
         'ProgramTypes': [
-            ''
+            'name',
+            'provider',
+            'notes'
         ]
     }
         
