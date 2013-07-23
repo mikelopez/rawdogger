@@ -14,6 +14,7 @@ setup(
     package_dir={'xxxgalleries': 'xxxgalleries'},
     include_package_data=True,
     packages=find_packages(),
+    zip_safe=False,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
