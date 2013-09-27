@@ -4,6 +4,8 @@ class GalleryItem(models.Model):
     """
     Thumb can be either local url or remote URL
     depending on the gallery content download type.
+
+    This will be used for local galleries.
     """
     name = models.CharField(blank=True, null=True)
     thumb = models.TextField(blank=True, null=True)
@@ -14,13 +16,11 @@ class GalleryItem(models.Model):
 
 class Gallery(models.Model):
     """ Will consist of a gallery instance
-    Whether it be hosted, or local gallery
-     - if local gallery, overwrite items link to 
-    an internal link since we will be hosting
-    the galleries content.
-     - if hosted gallery, we log the target link
-    and the program type to which the target 
-    pertains to
+    Whether it be hosted, or local gallery.
+    Hosted galleries automatically redirect to the
+    URL specified.
+    Local galleries will display the items from
+    GalleryItems in an internal URL.
     """
     TYPES = (
             ('local', 'local',),
@@ -28,7 +28,9 @@ class Gallery(models.Model):
     )
     name = models.CharField(max_length=30)
     gallery_type = models.CharField(max_length=10, choices=TYPES)
+    hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
+
 
 class Providers(models.Model):
     """ Lets keep track of the providers that
