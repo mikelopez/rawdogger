@@ -1,6 +1,10 @@
 from django.db import models
 
 class GalleryItem(models.Model):
+    """
+    Thumb can be either local url or remote URL
+    depending on the gallery content download type.
+    """
     name = models.CharField(blank=True, null=True)
     thumb = models.TextField(blank=True, null=True)
     link = models.TextField(blank=True, null=True)
