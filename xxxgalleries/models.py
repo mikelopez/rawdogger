@@ -1,5 +1,7 @@
 from django.db import models
 
+class GalleryItem(models.Model):
+    pass
 
 class GalleryManager(models.Manager):
     def get_media_by_gallery(self):
