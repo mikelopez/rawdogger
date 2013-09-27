@@ -11,11 +11,6 @@ class GalleryItem(models.Model):
     gallery = models.ForeignKey('Gallery', blank=True, null=True)
     program_type = models.ForeignKey('ProgramTypes', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    
-
-class GalleryManager(models.Manager):
-    def get_media_by_gallerey(self):
-        pass
 
 class Gallery(models.Model):
     """ Will consist of a gallery instance
@@ -31,7 +26,6 @@ class Gallery(models.Model):
             ('local', 'local',),
             ('hosted', 'hosted'),
     )
-    objects = GalleryManager()
     name = models.CharField(max_length=30)
     gallery_type = models.CharField(max_length=10, choices=TYPES)
     provider = models.ForeignKey('Providers')
