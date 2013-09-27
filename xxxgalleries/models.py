@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class GalleryManager(models.Manager):
     def get_media_by_gallery(self):
         pass
@@ -7,11 +8,9 @@ class GalleryManager(models.Manager):
 class Gallery(models.Model):
     """ Will consist of a gallery instance
     Whether it be hosted, or local galler
-    
      - if local gallery, overwrite target_link to 
     an internal link since we will be hosting
     the galleries content.
-    
      - if hosted gallery, we log the target link
     and the program type to which the target 
     pertains to
@@ -24,12 +23,10 @@ class Gallery(models.Model):
     name = models.CharField(max_length=30)
     gallery_type = models.CharField(max_length=10, choices=TYPES)
     provider = models.ForeignKey('Providers')
-    
 
 class Providers(models.Model):
     """ Lets keep track of the providers that
     we will be dealing with.
-    
      - name
      - username
      - password
