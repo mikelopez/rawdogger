@@ -6,6 +6,8 @@ class GalleryItem(models.Model):
     link = models.TextField(blank=True, null=True)
     gallery = models.ForeignKey('Gallery', blank=True, null=True)
     program_type = models.ForeignKey('ProgramTypes', blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
 
 class GalleryManager(models.Manager):
     def get_media_by_gallery(self):
