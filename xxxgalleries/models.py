@@ -30,7 +30,13 @@ class Gallery(models.Model):
     gallery_type = models.CharField(max_length=10, choices=TYPES)
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
-
+    @property
+    def link(self):
+        if self.gallery_type == 'local':
+            return "/galleries/%s" % getattr(self, "id")
+        if self.gallery_type == "hosted":
+            return getattr(self, "hosted_jump_link")
+        return None
 
 class Providers(models.Model):
     """ Lets keep track of the providers that
