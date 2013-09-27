@@ -11,16 +11,16 @@ class GalleryItem(models.Model):
     gallery = models.ForeignKey('Gallery', blank=True, null=True)
     program_type = models.ForeignKey('ProgramTypes', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-
+    
 
 class GalleryManager(models.Manager):
-    def get_media_by_gallery(self):
+    def get_media_by_gallerey(self):
         pass
 
 class Gallery(models.Model):
     """ Will consist of a gallery instance
-    Whether it be hosted, or local galler
-     - if local gallery, overwrite target_link to 
+    Whether it be hosted, or local gallery
+     - if local gallery, overwrite items link to 
     an internal link since we will be hosting
     the galleries content.
      - if hosted gallery, we log the target link
