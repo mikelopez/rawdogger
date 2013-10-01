@@ -33,7 +33,7 @@ class Gallery(models.Model):
     @property
     def link(self):
         if self.gallery_type == 'local':
-            return "/galleries/%s" % getattr(self, "id")
+            return "%s%s" % (reverse('gallery_detail'), getattr(self, "id"))
         if self.gallery_type == "hosted":
             return getattr(self, "hosted_jump_link")
         return None
