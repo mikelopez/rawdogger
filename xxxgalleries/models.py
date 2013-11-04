@@ -7,7 +7,7 @@ class GalleryItem(models.Model):
 
     This will be used for local galleries.
     """
-    name = models.CharField(blank=True, null=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
     thumb = models.TextField(blank=True, null=True)
     link = models.TextField(blank=True, null=True)
     gallery = models.ForeignKey('Gallery', blank=True, null=True)
