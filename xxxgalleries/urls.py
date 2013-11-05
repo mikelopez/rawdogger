@@ -5,10 +5,10 @@ from xxxgalleries.views import IndexView, GalleryView, GalleryDetailView, \
         CreateGallery, UpdateGallery
 
 urlpatterns = patterns('',
-    url(r'^$', GalleryView.as_view(), name="xxx-index"),
-    url(r'^gallery/add', CreateGallery.as_view(), name="galleries-add"),
-    url(r'^gallery/update', UpdateGallery.as_view(), name="galleries-update"),
-    url(r'^gallery/', GalleryView.as_view(), name="galleries-view"),
+    url(r'^$', GalleryView.as_view(), name="xxx_index"),
+    url(r'^gallery/add', CreateGallery.as_view(), name="galleries_add"),
+    url(r'^gallery/update', UpdateGallery.as_view(), name="galleries_update"),
+    url(r'^gallery/', GalleryView.as_view(), name="galleries_view"),
     url(r'^galleries/(?P<pk>\d+)/$', GalleryDetailView.as_view(), name="gallery_detail"),
     
 )
