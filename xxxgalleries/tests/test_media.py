@@ -8,7 +8,7 @@ from xxxgalleries.models import *
 from django.contrib.auth.models import *
 from decimal import Decimal
 from django.conf import settings
-PROJECT_ROOTDIR = getattr(settings, "PROJECT_ROOTDIR", None)
+PROJECT_ROOTDIR = getattr(settings, "PROJECT_ROOTDIR")
 
 class TestMediaDirectories(TestCase):
     """
@@ -18,7 +18,7 @@ class TestMediaDirectories(TestCase):
         """ Check for project root directory """
         print 'Checking media directories\n'
         if not PROJECT_ROOTDIR:
-            assert False, "Project Root Directiry is set in settings"
+            assert False, "Project Root Directory is set in settings"
 
     def test_base_media(self):
         self.assertTrue(os.path.exists(PROJECT_ROOTDIR))
