@@ -28,7 +28,8 @@ class Gallery(models.Model):
     )
     name = models.CharField(max_length=30)
     gallery_type = models.CharField(max_length=10, choices=TYPES)
-    thumb = models.TextField(blank=True, null=True)
+    thumb_url = models.TextField(blank=True, null=True)
+    thumb_upload = models.ImageField(upload_to='gallery_thumbs')
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
     @property
