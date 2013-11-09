@@ -3,7 +3,7 @@
 {% block title %}Add a Category{% endblock %}
 {% block heading %}Add a Category{% endblock %}
 
-{% block form_submit_to %}{% url "categories-add" %}{% endblock %}
+{% block form_submit_to %}{% url "categories_add" %}{% endblock %}
 {% block add_category_form %}
     <table>
       {{form.as_table}}
@@ -13,5 +13,5 @@
 
 {% block action_button %}
     <input type="button" class="btn btn-info pull-right" value="View Categories" 
-                onclick="window.location='{% url 'categories-view' %}';"/>
+                onclick="window.location='{% url 'categories_view' %}';"/>
 {% endblock %}

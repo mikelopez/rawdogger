@@ -8,10 +8,12 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 
 from django.test import TestCase
-from settings import PROJECT_ROOTDIR
+from django.conf import settings
 from xxxgalleries.models import *
 from django.contrib.auth.models import *
 from decimal import Decimal
+
+PROJECT_ROOTDIR = getattr(settings, "PROJECT_ROOTDIR")
 
 class TestBaseModels(TestCase):
     """

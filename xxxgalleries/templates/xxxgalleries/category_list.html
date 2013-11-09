@@ -3,7 +3,7 @@
 
 {% block heading %}Categories{% endblock %}
 {% block action_button_text %}New Category{% endblock %}
-{% block action_button_href %}{% url 'categories-add' %}{% endblock %}
+{% block action_button_href %}{% url 'categories_add' %}{% endblock %}
 
 
 {% block table_list %}
@@ -22,5 +22,5 @@
 
 {% block action_button %}
     <input type="button" class="btn btn-info pull-right" value="New Category" 
-                onclick="window.location='{% url 'categories-add' %}';"/>
+                onclick="window.location='{% url 'categories_add' %}';"/>
 {% endblock %}
