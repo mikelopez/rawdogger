@@ -1,0 +1,18 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Add a Provider{% endblock %}
+{% block heading %}Add a Provider{% endblock %}
+
+
+{% block form_submit_to %}{% url "providers_add" %}{% endblock %}
+{% block add_provider_form %}
+    <table width="650">
+      {{form.as_table}}
+    </table>
+    <input type="submit" class="btn btn-success" value="Add Provider" />
+ {% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="View Providers" 
+                onclick="window.location='{% url 'providers_view' %}';"/>
+{% endblock %}

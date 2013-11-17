@@ -5,13 +5,13 @@
       <title>{% block title %}Title{% endblock %}</title>
       
         {% block load_bootstrap_css %}
-        <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet" />
+          <link href="{% static 'bootstrap-dark/css/bootstrap.css' %}" rel="stylesheet" />
         {% endblock %} 
         {% block load_jquery %}
           <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
         {% endblock %}
         {% block load_bootstrap_js %}
-        <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+          <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
         {% endblock %}
 
         {% block default_css_overrides %}
@@ -45,7 +45,8 @@
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Add Stuff <b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><a href="#">Add Categories</a></li>
-                        <li><a href="#">Add Galleries</a></li>
+                        <li><a href="{% url 'galleries_add' %}">New Gallery</a></li>
+                        <li><a href="{% url 'providers_add' %}">Manage Providers</a></li>
                         
                         <!--li class="divider"></li>
                         <li><a href="#">Separated link</a></li-->
@@ -90,6 +91,7 @@
 
             <form action="{% block form_submit_to %}#{% endblock %}" method="POST"> {% csrf_token %}
                 {% block add_gallery_form %} {% endblock %}
+                {% block add_provider_form %} {% endblock %}
             </form>
 
             {% block table_list %}

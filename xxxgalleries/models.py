@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 class GalleryItem(models.Model):
     """
@@ -51,13 +52,16 @@ class Providers(models.Model):
      - ccbill (optional)
      - notes
     """
+    def get_absolute_url(self):
+        return reverse('provider_detail', kwargs={'pk': self.pk})
+
     name = models.CharField(max_length=30)
     username = models.CharField(max_length=50, blank=True, null=True)
     password = models.CharField(max_length=20, blank=True, null=True)
     website = models.CharField(blank=True, null=True, max_length=150)
-    login_url = models.TextField(blank=True, null=True)
+    login_url = models.CharField(max_length=200, blank=True, null=True)
     ccbill = models.CharField(max_length=20, blank=True, null=True)
-    notes = models.TextField()
+    notes = models.TextField(blank=True, null=True)
 
 class ProgramTypes(models.Model):
     """ Keep track of the program types for 
