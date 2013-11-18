@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.conf import settings
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
 
 LOCAL_TYPE = 'local'
 HOSTED_TYPE = 'hosted'

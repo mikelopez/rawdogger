@@ -9,6 +9,7 @@ from django.contrib.auth.models import *
 from decimal import Decimal
 from django.conf import settings
 PROJECT_ROOTDIR = getattr(settings, "PROJECT_ROOTDIR")
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
 
 class TestMediaDirectories(TestCase):
     """
@@ -21,10 +22,12 @@ class TestMediaDirectories(TestCase):
             assert False, "Project Root Directory is set in settings"
 
     def test_base_media(self):
-        self.assertTrue(os.path.exists(PROJECT_ROOTDIR))
+        """Finds teh base media path."""
+        self.assertTrue(os.path.exists(MEDIA_ROOT))
 
     def test_galleries_media(self):
-        self.assertTrue(os.path.exists("%s/xxxgalleries" % (PROJECT_ROOTDIR)))
+        """Finds the galleries subdirectory in media_root"""
+        self.assertTrue(os.path.exists("%s/galleries" % (MEDIA_ROOT)))
 
     
         
