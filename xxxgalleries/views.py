@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import render
 from models import Gallery, Providers
-#from forms import GalleryForm, CategoryForm
+from forms import GalleryForm
 
 class IndexView(TemplateView):
     """ About Page View """
@@ -13,6 +13,7 @@ class GalleryView(ListView):
 
 class CreateGallery(CreateView):
     """ Create Gallery page view """
+    model_class = GalleryForm
     model = Gallery
 
 class UpdateGallery(UpdateView):
