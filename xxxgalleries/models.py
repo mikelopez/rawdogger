@@ -35,10 +35,11 @@ class Gallery(models.Model):
     )
     name = models.CharField(max_length=30)
     gallery_type = models.CharField(max_length=10, choices=TYPES)
-    media_folder = mod
+    media_folder = models.CharField(max_length=100, blank=True, null=True)
     thumb_url = models.TextField(blank=True, null=True, 
                                     verbose_name="Select a thumbnail")
-    thumb_upload = models.ImageField(upload_to='gallery_thumbs', blank=True, null=True,
+    thumb_upload = models.ImageField(upload_to='gallery_thumbs', 
+                                     blank=True, null=True,
                                      help_text="Upload a thumbnail instead")
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
