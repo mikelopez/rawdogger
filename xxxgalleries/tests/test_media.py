@@ -28,11 +28,17 @@ class TestMediaDirectories(TestCase):
 
     def test_base_media(self):
         """Finds teh base media path."""
-        self.assertTrue(os.path.exists(MEDIA_ROOT))
+        if not os.path.exists(MEDIA_ROOT):
+            termprint("ERROR", "MEDIA ROOT is missing....Create it now!")
+            assert False, "Failed to find MEDIA_ROOT"
+        assert True, "YAY"
 
     def test_galleries_media(self):
         """Finds the galleries subdirectory in media_root"""
-        self.assertTrue(os.path.exists("%s/galleries" % (MEDIA_ROOT)))
+        if not os.path.exists("%s/galleries" % (MEDIA_ROOT)):
+            termprint("ERROR", "Please create a directory called galleries under MEDIA_ROOT")
+            assert False, "Failed to find galleries within MEDIA_ROOT"
+        assert True, "YAY"
 
     
         
