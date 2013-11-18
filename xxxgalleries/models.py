@@ -1,6 +1,9 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 
+LOCAL_TYPE = 'local'
+HOSTED_TYPE = 'hosted'
+
 class GalleryItem(models.Model):
     """
     Thumb can be either local url or remote URL
@@ -15,6 +18,7 @@ class GalleryItem(models.Model):
     program_type = models.ForeignKey('ProgramTypes', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
+
 class Gallery(models.Model):
     """ Will consist of a gallery instance
     Whether it be hosted, or local gallery.
@@ -24,22 +28,39 @@ class Gallery(models.Model):
     GalleryItems in an internal URL.
     """
     TYPES = (
-            ('local', 'local',),
-            ('hosted', 'hosted'),
+            (LOCAL_TYPE, LOCAL_TYPE),
+            (HOSTED_TYPE, HOSTED_TYPE),
     )
     name = models.CharField(max_length=30)
     gallery_type = models.CharField(max_length=10, choices=TYPES)
-    thumb_url = models.TextField(blank=True, null=True)
-    thumb_upload = models.ImageField(upload_to='gallery_thumbs')
+    media_folder = mod
+    thumb_url = models.TextField(blank=True, null=True, 
+                                    verbose_name="Select a thumbnail")
+    thumb_upload = models.ImageField(upload_to='gallery_thumbs', blank=True, null=True,
+                                     help_text="Upload a thumbnail instead")
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
     @property
     def link(self):
-        if self.gallery_type == 'local':
+        if self.gallery_type == LOCAL_TYPE:
             return "%s%s" % (reverse('gallery_detail'), getattr(self, "id"))
-        if self.gallery_type == "hosted":
+        if self.gallery_type == HOSTED_TYPE:
             return getattr(self, "hosted_jump_link")
         return None
+
+    def show_media(self):
+        """Showa the media if the gallery is local"""
+        if getattr(self, 'gallery_type') == LOCAL_TYPE:
+            media_dir = '%s/galleries/%s', (MEDIA_ROOT, self.media_folder)
+            if not os.path.exists(media_dir):
+                return None
+            files = []
+            for filename in os.listdir(media_dir):
+                for k in ['.jpg', '.gif', 'wmv', 'mp4']:
+                    if k in filename.lower():
+                        files.append(i)
+            return files
+
 
 class Providers(models.Model):
     """ Lets keep track of the providers that

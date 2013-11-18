@@ -1,0 +1,28 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block heading %}Providers View{% endblock %}
+
+{% block table_list %}
+
+  <table class="table table-bordered" style="width:100%;font-size:12px;">
+    <tr><td>Name</td><td>Username</td><td>Password</td>
+      <td>Website</td><td>Login URL</td><td>CCBill</td></tr>
+    {% for i in object_list %}
+    <tr>
+      <td><a href="{% url 'provider_detail' pk=i.id %}">{{ i.name }}</a></td>
+      <td>{{ i.username }} </td>
+      <td>{{ i.password }}</td>
+      <td>{{ i.website }}</td>
+      <td>{{ i.login_url }}</td>
+      <td>{{ i.ccbill }}</td>
+    </tr>
+    {% endfor %}
+   </table>
+
+ {% endblock %}
+
+
+ {% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Add Gallery" 
+                onclick="window.location='{% url 'providers_add' %}';"/>
+{% endblock %}
