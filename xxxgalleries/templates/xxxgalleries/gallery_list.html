@@ -8,12 +8,26 @@
     <tr><td>Name</td><td>Category</td><td>Description</td></tr>
     {% for i in object_list %}
     <tr>
-      <td>{{ i.name }} </td>
+      <td><a href="{% url 'gallery_detail' pk=i.id %}">{{ i.name }}</a></td>
       <td>{{ i.category }} </td>
       <td>{{ i.description }}</td>
     </tr>
     {% endfor %}
-   </table>
+  </table>
+
+   {% for i in object_list %}
+        <div class="pull-left" style="margin-right:20px;margin-bottom:10px;height:300px;">
+            <div style="width:100%;height:50px;background-color:#fff;color:#000;">
+                <b>{{i.name}}</b><br />
+                {% if i.in_sync %}<span class="label label-success">IN SYNC</span>{% else %}
+                    <span class="label label-warning">NOT SYNC</span>{% endif %}
+                
+            </div>
+            <a href="{{i.hosted_jump_link}}" target="_blank">
+                <img src="/media/galleries/{{i.media_folder}}/{{i.thumbnail}}" style="height:250px;" width="200" height="250" />
+            </a>
+        </div>
+   {% endfor %}
 
  {% endblock %}
 

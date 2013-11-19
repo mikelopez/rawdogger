@@ -1,21 +1,21 @@
 {% extends "xxxgalleries/base.html" %}
 
-
+OBJECT = {{object}}
 {% block heading %}Provider: {{object.name}}{% endblock %}
 
 
 {% block detail_view %}
-    Name: {{object.category}}<hr />
+
+    Name: {{object.name}}<hr />
     Login: <a href="{{object.login_url}}">{{object.login_url}}</a><br />
     Username: {{object.username}}<br />
     Password: {{object.password}}<br />
     Website: {{object.website}}<br />
     CCBill: {{object.ccbill}}<br />
-
 {% endblock %}
 
 {% block action_button %}
     <input type="button" class="btn btn-info pull-right" value="Back to Providers" 
-                onclick="window.location='{% url 'galleries_view' %}';"/>
+                onclick="window.location='{% url 'providers_view' %}';"/>
 {% endblock %}
 

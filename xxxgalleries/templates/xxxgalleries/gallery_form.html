@@ -6,7 +6,7 @@
 
 {% block form_submit_to %}{% url "galleries_add" %}{% endblock %}
 {% block add_gallery_form %}
-    <table width="650">
+    <table width="650" cellpadding="10" cellspacing="10">
       {{form.as_table}}
     </table>
     <input type="submit" class="btn btn-success" value="Add Gallery" />

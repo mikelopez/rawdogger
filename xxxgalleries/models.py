@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -15,6 +16,7 @@ class GalleryItem(models.Model):
     """
     name = models.CharField(max_length=50, blank=True, null=True)
     thumb = models.TextField(blank=True, null=True)
+    filename = models.CharField(blank=True, null=True, max_length=100)
     link = models.TextField(blank=True, null=True)
     gallery = models.ForeignKey('Gallery', blank=True, null=True)
     program_type = models.ForeignKey('ProgramTypes', blank=True, null=True)
@@ -37,12 +39,23 @@ class Gallery(models.Model):
     gallery_type = models.CharField(max_length=10, choices=TYPES)
     media_folder = models.CharField(max_length=100, blank=True, null=True)
     thumb_url = models.TextField(blank=True, null=True, 
-                                    verbose_name="Select a thumbnail")
+                                    verbose_name="Select a thumbnail",
+                                    help_text="(Leave empty to manually select)")
     thumb_upload = models.ImageField(upload_to='gallery_thumbs', 
                                      blank=True, null=True,
-                                     help_text="Upload a thumbnail instead")
+                                     help_text="Or Upload a thumbnail instead")
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
+    @property
+    def thumbnail(self):
+        for i in self.galleryitem_set.select_related():
+            if 'thumb' in getattr(i, 'filename'):
+                return getattr(i, 'filename')
+        for i in self.show_media():
+            if 'thumb' in i:
+                return i
+        return None
+
     @property
     def link(self):
         if self.gallery_type == LOCAL_TYPE:
@@ -51,18 +64,65 @@ class Gallery(models.Model):
             return getattr(self, "hosted_jump_link")
         return None
 
+    @property
+    def is_sync(self):
+        """Checks if theere is gallery items for each image in this gallery."""
+        items = self.galleryitem_set.select_related()
+        if not items:
+            return False
+        return self.images_sync_db
+
+    @property
+    def images_sync_db(self):
+        """Checks if there are no additional images added later to the 
+        folder which have not been added to the galleryItems, would need
+        to run a resync if this is off."""
+        items_append = []
+        for i in items:
+            items_check.append(i)
+        for i in self.show_media():
+            if not i in items_append:
+                return False
+        return True
+
+    @property
+    def missing_images(self):
+        """Checks if there is items in GalleryItem."""
+        images = self.show_media()
+        if not images:
+            return True
+        result = False
+        for i in self.galleryitem_set.select_related():
+            # if entry in galleryitem does not exist in filesystem
+            if not i in images:
+                result = True
+        return result
+
+    def get_absolute_url(self):
+        return reverse('gallery_detail', kwargs={'pk': self.pk})
+
+    def get_media_directory(self):
+        """Returns the media directory string for this gallery."""
+        return '%s/galleries/%s' % (MEDIA_ROOT, 
+                                   getattr(self, 'media_folder'))
+
+    def get_media_folder(self):
+        """Checks if the directory is found."""
+        return os.path.exists(self.get_media_directory())
+
     def show_media(self):
         """Showa the media if the gallery is local"""
         if getattr(self, 'gallery_type') == LOCAL_TYPE:
-            media_dir = '%s/galleries/%s', (MEDIA_ROOT, self.media_folder)
+            media_dir = '%s/galleries/%s' % (MEDIA_ROOT, self.media_folder)
             if not os.path.exists(media_dir):
                 return None
             files = []
             for filename in os.listdir(media_dir):
-                for k in ['.jpg', '.gif', 'wmv', 'mp4']:
+                for k in ['.jpg', '.gif', 'wmv', 'mp4', '.png']:
                     if k in filename.lower():
-                        files.append(i)
+                        files.append(filename)
             return files
+        return None
 
 
 class Providers(models.Model):
@@ -86,6 +146,7 @@ class Providers(models.Model):
     login_url = models.CharField(max_length=200, blank=True, null=True)
     ccbill = models.CharField(max_length=20, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
+    logo = models.TextField(blank=True, null=True)
 
 class ProgramTypes(models.Model):
     """ Keep track of the program types for 

@@ -2,6 +2,8 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.shortcuts import render
 from models import Gallery, Providers
 from forms import GalleryForm
+from django.conf import settings
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
 
 class IndexView(TemplateView):
     """ About Page View """
@@ -19,10 +21,31 @@ class CreateGallery(CreateView):
 class UpdateGallery(UpdateView):
     """ Update view """
     model = Gallery
+    context_object_name = 'object'
     
 class GalleryDetailView(DetailView):
     """ Gallery Detail Page View """
     queryset = Gallery.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super(GalleryDetailView, self).get_context_data(**kwargs)
+        context['MEDIA_ROOT'] = MEDIA_ROOT
+        obj = context.get('object')
+        # add the media either from DB (if any) or from local FS
+        media = []
+        if obj.is_sync:
+            for i in obj.galleryitem_set.select_related():
+                media.append({'filename': i.filename, 'obj': i})
+        else:
+            for i in obj.show_media():
+                media.append({'filename': i, 'obj': None})
+        thumb = None
+        for m in media:
+            if 'thumb' in m.get('filename'):
+                thumb = m
+        context['thumbnail'] = thumb
+        context['media'] = media
+        return context
+
     def get_object(self, **kwargs):
         object = super(GalleryDetailView, self).get_object(**kwargs)
         return object

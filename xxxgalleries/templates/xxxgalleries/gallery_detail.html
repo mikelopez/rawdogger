@@ -1,17 +1,83 @@
 {% extends "xxxgalleries/base.html" %}
 
-
+{% block title %}Gallery{% endblock %}
 {% block heading %}Gallery: {{object.name}}{% endblock %}
 
-
 {% block detail_view %}
-    Category: {{object.category}}<hr />
-    Link: {{object.location}}
+    <div class="pull-left" style="width:680px;">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>Jump Link</td><td>{{object.hosted_jump_link}}</td>
+            </tr>
+            <tr>
+                <td>Media Folder</td><td>{{object.media_folder}}</td>
+            </tr>
+            <tr>
+                <td>Media Folder</td><td>
+                    {% if object.get_media_folder %}
+                        <span class="label label-success">FOUND</span>
+                    {% else %}
+                        <span class="label label-warning">NOT FOUND</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Provider</td><td>{{object.provider.name}}</td>
+            </tr>
+            <tr>
+                <td>Website</td><td>{{object.provider.website}}</td>
+            </tr>
+            <tr>
+                <td>In Sync</td>
+                <td>
+                    {% if object.is_sync %}
+                        <span class="label label-success">SYNC</span>
+                    {% else %}
+                        <span class="label label-warning">SYNC</span>
+                    {% endif %}
 
+                </td>
+            </tr>
+            <tr>
+                <td>Missing Images</td>
+                <td>
+                    {% if not object.missing_images %}
+                        <span class="label label-success">SYNC</span>
+                    {% else %}
+                        <span class="label label-warning">SYNC</span>
+                    {% endif %}
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="pull-right" style="width:220px;height:300px;background-color:#fff;color:#000;">
+            {% if thumbnail %}
+                <img src="/media/galleries/{{object.media_folder}}/{{thumbnail.filename}}" width="250" height="270"/>
+            {% else %}
+                NO THUMB
+            {% endif %}
+    </div>
+
+
+    <div class="linebreak10"></div>
+    <hr />
+
+    {% for i in object.show_media %}
+        <div class="pull-left" style="margin-right:20px;margin-bottom:10px;height:300px;">
+            <a href="{{object.hosted_jump_link}}" target="_blank">
+            	<img src="/media/galleries/{{object.media_folder}}/{{i}}" style="height:250px;" width="200" height="250" />
+            </a>
+        </div>
+    {% endfor %}
 {% endblock %}
 
 {% block action_button %}
+    <input type="button" class="btn btn-warning pull-right" value="Edit This" 
+                onclick="window.location='{% url 'galleries_update' pk=object.id %}';"/>
+    <br /><br />
     <input type="button" class="btn btn-info pull-right" value="Back to Galleries" 
-                onclick="window.location='{% url 'galleries_view' %}';"/>
+            onclick="window.location='{% url 'galleries_view' %}';"/>
+
 {% endblock %}
 
