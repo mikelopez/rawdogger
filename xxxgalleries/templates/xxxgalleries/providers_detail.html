@@ -1,6 +1,6 @@
 {% extends "xxxgalleries/base.html" %}
 
-OBJECT = {{object}}
+{% block title %}Provider {{object.name}} {% endblock %}
 {% block heading %}Provider: {{object.name}}{% endblock %}
 
 

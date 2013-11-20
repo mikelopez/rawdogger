@@ -1,21 +1,21 @@
 {% extends "xxxgalleries/base.html" %}
 
-{% block title %}Provider Update{% endblock %}
-{% block heading %}Update Provider{% endblock %}
+{% block title %}Update Gallery{% endblock %}
+{% block heading %}Update Gallery {{object}}{% endblock %}
 
 
 {% block form_submit_to %}
-	{% url "providers_update" pk=object.id %}
+		{% url "galleries_update" pk=object.id %}
 {% endblock %}
 
 {% block add_gallery_form %}
     <table width="650" cellpadding="10" cellspacing="10">
       {{form.as_table}}
     </table>
-    <input type="submit" class="btn btn-success" value="Update Provider" />
+    <input type="submit" class="btn btn-success" value="Add Gallery" />
  {% endblock %}
 
 {% block action_button %}
-    <input type="button" class="btn btn-info pull-right" value="View Providers" 
+    <input type="button" class="btn btn-info pull-right" value="View Galleries" 
                 onclick="window.location='{% url 'galleries_view' %}';"/>
 {% endblock %}

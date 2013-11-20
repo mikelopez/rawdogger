@@ -7,6 +7,15 @@ from forms import GalleryForm, ProvidersForm
 from django.conf import settings
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
 
+class UpdateInstanceView(UpdateView):
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        clean = form.cleaned_data 
+        for k, v in clean.items():
+            setattr(self.object, k, v)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
 class IndexView(TemplateView):
     """ About Page View """
     template_name = "index.html"
@@ -21,9 +30,15 @@ class CreateGallery(CreateView):
     model_class = GalleryForm
     model = Gallery
 
-class UpdateGallery(UpdateView):
+class UpdateGallery(UpdateInstanceView):
     """ Update view """
     model = Gallery
+    form_class = GalleryForm
+    template_name = 'xxxgalleries/gallery_update.html'
+    def get_object(self, queryset=None):
+        obj = Gallery.objects.get(id=self.kwargs['pk'])
+        return obj
+
     
 class GalleryDetailView(DetailView):
     """ Gallery Detail Page View """
