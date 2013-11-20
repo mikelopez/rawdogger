@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^galleries/(?P<pk>\d+)/$', GalleryDetailView.as_view(), name="gallery_detail"),
 
     url(r'^provider/add', CreateProvider.as_view(), name="providers_add"),
-    url(r'^provider/update', UpdateProvider.as_view(), name="providers_update"),
+    url(r'^provider/update/(?P<pk>\d+)/$', UpdateProvider.as_view(), name="providers_update"),
     url(r'^provider/', ProviderView.as_view(), name="providers_view"),
     url(r'^providers/(?P<pk>\d+)/$', ProviderDetailView.as_view(), name="provider_detail"),
     

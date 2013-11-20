@@ -49,6 +49,20 @@
 
                 </td>
             </tr>
+            <tr>
+                <td>Tags</td>
+                <td>
+                    <span class="label label-success">Puta</span>
+                    <span class="label label-warn">Slut</span>
+                    <span class="label label-danger">La Zona</span>
+                    <br /><br />
+                    <input type="text" name="tag_name" placeholder="Add new Tag..."/>&nbsp;
+                    <input type="button" class="btn btn-success" value="Add" />
+                    <br /><br />
+                    <input type="text" name="tag_name" placeholder="Name of tag to remove..."/>&nbsp;
+                    <input type="button" class="btn btn-success" value="Delete" />
+                </td>
+            </tr>
         </table>
     </div>
     <div class="pull-right" style="width:220px;height:300px;background-color:#fff;color:#000;">
@@ -77,7 +91,9 @@
                 onclick="window.location='{% url 'galleries_update' pk=object.id %}';"/>
     <br /><br />
     <input type="button" class="btn btn-info pull-right" value="Back to Galleries" 
-            onclick="window.location='{% url 'galleries_view' %}';"/>
-
+    onclick="window.location='{% url 'galleries_view' %}';"/>
+    <br /><br />
+    <input type="button" class="btn btn-danger pull-right" value="Reload this Page"
+            onclick="window.location='{% url 'gallery_detail' pk=object.id %}';" />
 {% endblock %}
 

@@ -1,7 +1,9 @@
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
+from django.views.generic import TemplateView, ListView, View,\
+                                 DetailView, CreateView, UpdateView
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from models import Gallery, Providers
-from forms import GalleryForm
+from forms import GalleryForm, ProvidersForm
 from django.conf import settings
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
 
@@ -11,6 +13,7 @@ class IndexView(TemplateView):
 
 class GalleryView(ListView):
     """ Gallery List Page View """
+    queryset = Gallery.objects.all().order_by('-id')
     model = Gallery
 
 class CreateGallery(CreateView):
@@ -21,7 +24,6 @@ class CreateGallery(CreateView):
 class UpdateGallery(UpdateView):
     """ Update view """
     model = Gallery
-    context_object_name = 'object'
     
 class GalleryDetailView(DetailView):
     """ Gallery Detail Page View """
@@ -61,6 +63,20 @@ class CreateProvider(CreateView):
 class UpdateProvider(UpdateView):
     """ Update view """
     model = Providers
+    form_class = ProvidersForm
+    template_name = 'xxxgalleries/provider_update.html'
+
+    def get_object(self, queryset=None):
+        obj = Providers.objects.get(id=self.kwargs['pk'])
+        return obj
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        clean = form.cleaned_data 
+        for k, v in clean.items():
+            setattr(self.object, k, v)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
     
 class ProviderDetailView(DetailView):
     """ Gallery Detail Page View """

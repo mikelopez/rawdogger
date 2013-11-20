@@ -6,7 +6,13 @@ OBJECT = {{object}}
 
 {% block detail_view %}
 
-    Name: {{object.name}}<hr />
+    <div class="pull-left" style="background-color:#fff">
+        <img class="pull-left" src="{{object.logo}}" />
+    </div>
+
+    <div class="linebreak10"></div>
+    <hr />
+    <div style="width:300px;" >Name:<b> {{object.name}}</b>
     Login: <a href="{{object.login_url}}">{{object.login_url}}</a><br />
     Username: {{object.username}}<br />
     Password: {{object.password}}<br />
@@ -15,6 +21,8 @@ OBJECT = {{object}}
 {% endblock %}
 
 {% block action_button %}
+    <input type="button" class="btn btn-warning pull-right" value="Edit" 
+    onclick="window.location='{% url 'providers_update' pk=object.id %}';"/><br /><br />
     <input type="button" class="btn btn-info pull-right" value="Back to Providers" 
                 onclick="window.location='{% url 'providers_view' %}';"/>
 {% endblock %}

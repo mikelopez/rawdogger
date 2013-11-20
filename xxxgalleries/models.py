@@ -46,6 +46,7 @@ class Gallery(models.Model):
                                      help_text="Or Upload a thumbnail instead")
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
+    #tags = models.ManyToManyField('Tags', blank=True, null=True)
     @property
     def thumbnail(self):
         for i in self.galleryitem_set.select_related():
@@ -136,6 +137,11 @@ class Providers(models.Model):
      - ccbill (optional)
      - notes
     """
+    def __str__(self):
+        return str("%s / %s" % (self.name, self.website))
+    def __unicode__(self):
+        return unicode("%s / %s" % (self.name, self.website))
+
     def get_absolute_url(self):
         return reverse('provider_detail', kwargs={'pk': self.pk})
 
@@ -157,4 +163,6 @@ class ProgramTypes(models.Model):
     name = models.CharField(max_length=15)
     notes = models.TextField(blank=True, null=True)
 
-
+class Tags(models.Model):
+    """Hashtag or categorize a gallery"""
+    name = models.CharField(max_length=50)
