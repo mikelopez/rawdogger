@@ -46,7 +46,7 @@ class Gallery(models.Model):
                                      help_text="Or Upload a thumbnail instead")
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
-    #tags = models.ManyToManyField('Tags', blank=True, null=True)
+    tags = models.ManyToManyField('Tags', blank=True, null=True)
     @property
     def thumbnail(self):
         for i in self.galleryitem_set.select_related():
