@@ -5,6 +5,7 @@ from django.conf import settings
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
 
 LOCAL_TYPE = 'local'
+LOCAL_MIXED = 'local-mix'
 HOSTED_TYPE = 'hosted'
 
 class GalleryItem(models.Model):
@@ -33,8 +34,14 @@ class Gallery(models.Model):
     """
     TYPES = (
             (LOCAL_TYPE, LOCAL_TYPE),
+            (LOCAL_MIXED, LOCAL_MIXED),
             (HOSTED_TYPE, HOSTED_TYPE),
     )
+    CONTENT = (
+            ('pic', 'pic'),
+            ('video', 'video'),
+            ('both', 'both'))
+
     name = models.CharField(max_length=30)
     gallery_type = models.CharField(max_length=10, choices=TYPES)
     media_folder = models.CharField(max_length=100, blank=True, null=True)
@@ -113,7 +120,8 @@ class Gallery(models.Model):
 
     def show_media(self):
         """Showa the media if the gallery is local"""
-        if getattr(self, 'gallery_type') == LOCAL_TYPE:
+        if getattr(self, 'gallery_type') == LOCAL_TYPE or \
+                getattr(self, 'gallery_type') == LOCAL_MIXED:
             media_dir = '%s/galleries/%s' % (MEDIA_ROOT, self.media_folder)
             if not os.path.exists(media_dir):
                 return None
