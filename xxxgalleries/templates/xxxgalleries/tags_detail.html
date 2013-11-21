@@ -1,0 +1,29 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Tag Gallery View{% endblock %}
+{% block heading %}{{object.name|capfirst}} Galleries{% endblock %}
+
+{% block table_list %}
+
+
+   {% for i in galleries %}
+        <div class="pull-left" style="margin-right:20px;margin-bottom:10px;height:300px;text-align:center;background-color:#fff;">
+            <a href="{% url 'gallery_detail' pk=i.id %}" target="_blank">
+                <img src="/media/galleries/{{i.media_folder}}/{{i.thumbnail}}" style="height:250px;" width="200" height="250" />
+            </a>
+            <div style="width:100%;height:50px;color:#000;padding:5px;text-align:left;">
+                <b>{{i.name}}</b><br />
+                {% if i.in_sync %}<span class="label label-success">IN SYNC</span>{% else %}
+                    <span class="label label-warning">NOT SYNC</span>{% endif %}
+                
+            </div>
+        </div>
+   {% endfor %}
+
+ {% endblock %}
+
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Go Back" 
+                onclick="window.location='{% url 'tags_view' %}';"/>
+{% endblock %}
