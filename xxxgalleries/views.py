@@ -29,7 +29,7 @@ class GalleryView(ListView):
     model = Gallery
     def get_context_data(self, **kwargs):
         context = super(GalleryView, self).get_context_data(**kwargs)
-        context['tags'] = Tags.objects.all()
+        context['tags'] = Tags.objects.all().order_by('name')
         return context
 
 
