@@ -16,19 +16,28 @@ class UpdateInstanceView(UpdateView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
+
+
 class IndexView(TemplateView):
     """ About Page View """
     template_name = "index.html"
+
 
 class GalleryView(ListView):
     """ Gallery List Page View """
     queryset = Gallery.objects.all().order_by('-id')
     model = Gallery
+    def get_context_data(self, **kwargs):
+        context = super(GalleryView, self).get_context_data(**kwargs)
+        context['tags'] = Tags.objects.all()
+        return context
+
 
 class CreateGallery(CreateView):
     """ Create Gallery page view """
     model_class = GalleryForm
     model = Gallery
+
 
 class UpdateGallery(UpdateInstanceView):
     """ Update view """
@@ -67,13 +76,17 @@ class GalleryDetailView(DetailView):
         object = super(GalleryDetailView, self).get_object(**kwargs)
         return object
 
+
+
 class ProviderView(ListView):
     """ Providers List Page View """
     model = Providers
 
+
 class CreateProvider(CreateView):
     """ Create Gallery page view """
     model = Providers
+
 
 class UpdateProvider(UpdateView):
     """ Update view """
@@ -92,7 +105,8 @@ class UpdateProvider(UpdateView):
             setattr(self.object, k, v)
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
-    
+
+
 class ProviderDetailView(DetailView):
     """ Gallery Detail Page View """
     queryset = Providers.objects.all()
@@ -102,10 +116,29 @@ class ProviderDetailView(DetailView):
         return object
 
 
+
+class TagsView(ListView):
+    """ Tags List Page View """
+    queryset = Tags.objects.all().order_by('name')
+    model = Tags
+
+
+class TagsDetailView(DetailView):
+    """ Tags Detail Page View """
+    queryset = Tags.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super(TagsDetailView, self).get_context_data(**kwargs)
+        context['galleries'] = Gallery.objects.filter(
+                                    tags__pk=context.get('object').pk)
+        return context
+
+    def get_object(self, **kwargs):
+        object = super(TagsDetailView, self).get_object(**kwargs)
+        return object
+
+
 class AddTagToGallery(View):
-    """
-    Add a tag to a gallery 
-    """
+    """ Add a tag to a gallery. """
     def get(self, request):
         """Sends back the form to the user and renders the template."""
         raise Http404
@@ -127,10 +160,9 @@ class AddTagToGallery(View):
             g.tags.add(obj)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 class RemoveTagFromGallery(View):
-    """
-    Add a tag to a gallery 
-    """
+    """Add a tag to a gallery """
     def get(self, request):
         """Sends back the form to the user and renders the template."""
         raise Http404

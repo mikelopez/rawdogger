@@ -174,3 +174,8 @@ class ProgramTypes(models.Model):
 class Tags(models.Model):
     """Hashtag or categorize a gallery"""
     name = models.CharField(max_length=50)
+    @property
+    def count_galleries(self):
+        """Returns count of related galleries"""
+        return self.gallery_set.all().count()
+

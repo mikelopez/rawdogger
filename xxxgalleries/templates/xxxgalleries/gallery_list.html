@@ -5,7 +5,7 @@
 
 {% block table_list %}
 
-
+    
    {% for i in object_list %}
         <div class="pull-left" style="margin-right:20px;margin-bottom:10px;height:300px;text-align:center;background-color:#fff;">
             <a href="{% url 'gallery_detail' pk=i.id %}" target="_blank">
@@ -24,6 +24,15 @@
 
 
  {% block action_button %}
+<div class="pull-right" style="width:400px;text-align:right;">
     <input type="button" class="btn btn-info pull-right" value="Add Gallery" 
                 onclick="window.location='{% url 'galleries_add' %}';"/>
+    <br /><br />
+    Filter by Tag 
+    <select onchange="window.location='/xxxgalleries/tag/'+this.value + '/';">
+        {% for i in tags %}
+            <option value="{{i.id}}">{{i.name}}</option>
+        {% endfor %}
+    </select>
+</div>
 {% endblock %}
