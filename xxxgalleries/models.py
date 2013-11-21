@@ -43,17 +43,21 @@ class Gallery(models.Model):
             ('both', 'both'))
 
     name = models.CharField(max_length=30)
+    content = models.CharField(max_length=10, choices=CONTENT, 
+                                help_text="Select the type of content",
+                                verbose_name="Content Type")
     gallery_type = models.CharField(max_length=10, choices=TYPES)
     media_folder = models.CharField(max_length=100, blank=True, null=True)
     thumb_url = models.TextField(blank=True, null=True, 
-                                    verbose_name="Select a thumbnail",
-                                    help_text="(Leave empty to manually select)")
+                                 verbose_name="Select a thumbnail",
+                                 help_text="(Leave empty to manually select)")
     thumb_upload = models.ImageField(upload_to='gallery_thumbs', 
                                      blank=True, null=True,
                                      help_text="Or Upload a thumbnail instead")
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
     tags = models.ManyToManyField('Tags', blank=True, null=True)
+    banners = models.ManyToManyField('Banners', blank=True, null=True)
     @property
     def thumbnail(self):
         for i in self.galleryitem_set.select_related():
@@ -171,6 +175,7 @@ class ProgramTypes(models.Model):
     name = models.CharField(max_length=15)
     notes = models.TextField(blank=True, null=True)
 
+
 class Tags(models.Model):
     """Hashtag or categorize a gallery"""
     name = models.CharField(max_length=50)
@@ -179,3 +184,18 @@ class Tags(models.Model):
         """Returns count of related galleries"""
         return self.gallery_set.all().count()
 
+
+class Banners(models.Model):
+    """Banners"""
+    TYPES = (('horizontal', 'horizontal'),
+             ('vertical', 'vertical'),
+             ('square', 'square'))
+    name = models.CharField(max_length=50)
+    ratio = models.CharField(max_length=20, choices=TYPES)
+    jumplink = models.TextField()
+    picture = models.TextField()
+    width = models.IntegerField(blank=True, null=True, default=0)
+    height = models.IntegerField(blank=True, null=True, default=0)
+    def count_galleries(self):
+        """Returns count of related galleries"""
+        return self.gallery_set.all().count()

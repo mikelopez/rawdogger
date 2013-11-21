@@ -5,6 +5,21 @@
 
 {% block table_list %}
 
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-warning" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="page-current" style="position:relative;font-size:27px;top:5px;">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a class="btn btn-warning" href="?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
     
    {% for i in object_list %}
         <div class="pull-left" style="margin-right:20px;margin-bottom:10px;height:300px;text-align:center;background-color:#fff;">
@@ -19,6 +34,25 @@
             </div>
         </div>
    {% endfor %}
+   <div class="linebreak10"></div>
+
+   {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-warning" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="page-current" style="position:relative;font-size:27px;top:5px;">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a class="btn btn-warning" href="?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+    <div class="linebreak10"></div>
+    <div class="linebreak10"></div>
 
  {% endblock %}
 
