@@ -1,0 +1,25 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Banner {{object.name}} {% endblock %}
+{% block heading %}Banner: {{object.name}}{% endblock %}
+
+
+{% block detail_view %}
+
+
+    <div class="linebreak10"></div>
+    <hr />
+    <div style="width:300px;" >Name:<b> {{object.name}}</b>
+    Jumplink: <a href="{{object.jumplink}}">{{object.jumplink}}</a><br />
+    Provider: {{object.provider.name}}<br />
+    Picture<br />
+    <a href="{{object.jumplink}}"><img src="{{object.picture}}" /></a>
+{% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-warning pull-right" value="Edit" 
+    onclick="window.location='{% url 'providers_update' pk=object.id %}';"/><br /><br />
+    <input type="button" class="btn btn-info pull-right" value="Back to Providers" 
+                onclick="window.location='{% url 'providers_view' %}';"/>
+{% endblock %}
+

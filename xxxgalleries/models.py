@@ -196,6 +196,7 @@ class Banners(models.Model):
     picture = models.TextField()
     width = models.IntegerField(blank=True, null=True, default=0)
     height = models.IntegerField(blank=True, null=True, default=0)
+    provider = models.ForeignKey('Providers')
     def count_galleries(self):
         """Returns count of related galleries"""
         return self.gallery_set.all().count()

@@ -1,0 +1,21 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Add a Gallery{% endblock %}
+{% block heading %}Add a Gallery{% endblock %}
+
+
+{% block form_submit_to %}
+		{% url "banners_add" %}
+{% endblock %}
+
+{% block add_gallery_form %}
+    <table width="650" cellpadding="10" cellspacing="10">
+      {{form.as_table}}
+    </table>
+    <input type="submit" class="btn btn-success" value="Add Banner" />
+ {% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="View Banners" 
+                onclick="window.location='{% url 'banners_view' %}';"/>
+{% endblock %}

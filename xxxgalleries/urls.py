@@ -1,10 +1,11 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 
-from xxxgalleries.views import IndexView, GalleryView, GalleryDetailView, \
-        CreateGallery, UpdateGallery, CreateProvider, UpdateProvider, \
-        ProviderView, ProviderDetailView, \
-        TagsView, TagsDetailView, AddTagToGallery, RemoveTagFromGallery
+from xxxgalleries.views import IndexView, \
+        GalleryView, GalleryDetailView, CreateGallery, UpdateGallery, \
+        CreateProvider, UpdateProvider, ProviderView, ProviderDetailView, \
+        TagsView, TagsDetailView, AddTagToGallery, RemoveTagFromGallery, \
+        CreateBanners, UpdateBanners, BannersView, BannersDetailView
         
 
 urlpatterns = patterns('',
@@ -18,6 +19,11 @@ urlpatterns = patterns('',
     url(r'^provider/update/(?P<pk>\d+)/$', UpdateProvider.as_view(), name="providers_update"),
     url(r'^provider/', ProviderView.as_view(), name="providers_view"),
     url(r'^providers/(?P<pk>\d+)/$', ProviderDetailView.as_view(), name="provider_detail"),
+
+    url(r'^banners/add', CreateBanners.as_view(), name="banners_add"),
+    url(r'^banners/update/(?P<pk>\d+)/$', UpdateBanners.as_view(), name="banners_update"),
+    url(r'^banners/', BannersView.as_view(), name="banners_view"),
+    url(r'^banners/(?P<pk>\d+)/$', BannersDetailView.as_view(), name="banners_detail"),
     
     url(r'^tag/(?P<pk>\d+)/$', TagsDetailView.as_view(), name="tags_detail"),
     url(r'^tags/', TagsView.as_view(), name="tags_view"),

@@ -1,0 +1,29 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Banners{% endblock %}
+{% block heading %}Banners View{% endblock %}
+
+{% block table_list %}
+
+  <table class="table table-bordered" style="width:100%;font-size:12px;">
+    <tr><td>Picture</td><td>Name</td><td>Ratio</td>
+      <td>Jumplink</td></tr>
+    {% for i in object_list %}
+    <tr>
+      <td><a href="{% url 'banners_detail' pk=i.id %}">{{ i.name }}</a></td>
+      <td>{{ i.picture }}</td>
+      <td>{{ i.name }} </td>
+      <td>{{ i.ratio }}</td>
+      <td>{{ i.jumplink }}</td>
+      
+    </tr>
+    {% endfor %}
+   </table>
+
+ {% endblock %}
+
+
+ {% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Add Banners" 
+                onclick="window.location='{% url 'banners_add' %}';"/>
+{% endblock %}

@@ -2,12 +2,17 @@ from django.views.generic import TemplateView, ListView, View,\
                                  DetailView, CreateView, UpdateView
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from models import Gallery, Providers, Tags
-from forms import GalleryForm, ProvidersForm
+from models import Gallery, Providers, Tags, Banners
+from forms import GalleryForm, ProvidersForm, BannersForm
 from django.conf import settings
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
 
+
 class UpdateInstanceView(UpdateView):
+    """Todo:
+    update providers and banners classes
+    to update views to use base UpdateInstanceView
+    """
     def form_valid(self, form):
         self.object = form.save(commit=False)
         clean = form.cleaned_data 
@@ -36,7 +41,7 @@ class GalleryView(ListView):
 
 class CreateGallery(CreateView):
     """ Create Gallery page view """
-    model_class = GalleryForm
+    form_class = GalleryForm
     model = Gallery
 
 
@@ -184,3 +189,42 @@ class RemoveTagFromGallery(View):
                 raise Http404
             g.tags.remove(obj)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+
+class BannersView(ListView):
+    """ Providers List Page View """
+    model = Banners
+
+
+class CreateBanners(CreateView):
+    """ Create Gallery page view """
+    model = Banners
+
+
+class UpdateBanners(UpdateView):
+    """ Update view """
+    model = Banners
+    form_class = BannersForm
+    template_name = 'xxxgalleries/banners_update\.html'
+
+    def get_object(self, queryset=None):
+        obj = Bannerss.objects.get(id=self.kwargs['pk'])
+        return obj
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        clean = form.cleaned_data 
+        for k, v in clean.items():
+            setattr(self.object, k, v)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class BannersDetailView(DetailView):
+    """ Gallery Detail Page View """
+    queryset = Banners.objects.all()
+    def get_object(self, **kwargs):
+        """Get the object"""
+        object = super(BannersDetailView, self).get_object(**kwargs)
+        return object
