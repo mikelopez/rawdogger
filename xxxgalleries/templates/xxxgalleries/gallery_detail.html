@@ -52,15 +52,21 @@
             <tr>
                 <td>Tags</td>
                 <td>
-                    <span class="label label-success">Puta</span>
-                    <span class="label label-warn">Slut</span>
-                    <span class="label label-danger">La Zona</span>
+                    {% for i in object.tags.all %}
+                        <span class="label label-{% cycle 'success' 'danger' 'warning' %}">
+                            {{i.name}}</span>
+                    {% endfor %}
                     <br /><br />
-                    <input type="text" name="tag_name" placeholder="Add new Tag..."/>&nbsp;
-                    <input type="button" class="btn btn-success" value="Add" />
-                    <br /><br />
-                    <input type="text" name="tag_name" placeholder="Name of tag to remove..."/>&nbsp;
-                    <input type="button" class="btn btn-success" value="Delete" />
+                    <form action="{% url 'addtag' %}" method="POST">{% csrf_token %}
+                        <input type="hidden" name="gallery_id" value="{{object.id}}" />
+                        <input type="text" name="tag_name" placeholder="Add new Tag..."/>&nbsp;
+                        <input type="submit" class="btn btn-success" value="Add" />
+                    </form>
+                    <form action="{% url 'deltag' %}" method="POST">{% csrf_token %}
+                        <input type="hidden" name="gallery_id" value="{{object.id}}" />
+                        <input type="text" name="tag_name" placeholder="Name of tag to remove..."/>&nbsp;
+                        <input type="submit" class="btn btn-success" value="Delete" />
+                    </form>
                 </td>
             </tr>
         </table>

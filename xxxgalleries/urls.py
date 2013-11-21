@@ -3,7 +3,7 @@ from django.conf import settings
 
 from xxxgalleries.views import IndexView, GalleryView, GalleryDetailView, \
         CreateGallery, UpdateGallery, CreateProvider, UpdateProvider, \
-        ProviderView, ProviderDetailView
+        ProviderView, ProviderDetailView, AddTagToGallery, RemoveTagFromGallery
 
 urlpatterns = patterns('',
     url(r'^$', GalleryView.as_view(), name="xxx_index"),
@@ -17,4 +17,6 @@ urlpatterns = patterns('',
     url(r'^provider/', ProviderView.as_view(), name="providers_view"),
     url(r'^providers/(?P<pk>\d+)/$', ProviderDetailView.as_view(), name="provider_detail"),
     
+    url(r'^addtag/', AddTagToGallery.as_view(), name="addtag"),
+    url(r'^deltag/', RemoveTagFromGallery.as_view(), name="deltag"),
 )

@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, ListView, View,\
                                  DetailView, CreateView, UpdateView
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from models import Gallery, Providers
+from models import Gallery, Providers, Tags
 from forms import GalleryForm, ProvidersForm
 from django.conf import settings
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
@@ -101,3 +101,53 @@ class ProviderDetailView(DetailView):
         object = super(ProviderDetailView, self).get_object(**kwargs)
         return object
 
+
+class AddTagToGallery(View):
+    """
+    Add a tag to a gallery 
+    """
+    def get(self, request):
+        """Sends back the form to the user and renders the template."""
+        raise Http404
+
+    def post(self, request):
+        """Process the post request. Boat is required in the post data."""
+        gallery = request.POST.get('gallery_id')
+        tag = request.POST.get('tag_name')
+        tagsplit = tag.split(',')
+        for tags in tagsplit:
+            if tags[:1] == ' ':
+                tags = tags[1:]
+            tag_name = str(tags).lower()
+            obj, created = Tags.objects.get_or_create(name=tag_name)
+            try:
+                g = Gallery.objects.get(pk=int(gallery))
+            except (ValueError, Gallery.DoesNotExist):
+                raise Http404
+            g.tags.add(obj)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+class RemoveTagFromGallery(View):
+    """
+    Add a tag to a gallery 
+    """
+    def get(self, request):
+        """Sends back the form to the user and renders the template."""
+        raise Http404
+
+    def post(self, request):
+        """Process the post request. Boat is required in the post data."""
+        gallery = request.POST.get('gallery_id')
+        tag = request.POST.get('tag_name')
+        tagsplit = tag.split(',')
+        for tags in tagsplit:
+            if tags[:1] == ' ':
+                tags = tags[1:]
+            tag_name = str(tags).lower()
+            obj, created = Tags.objects.get_or_create(name=tag_name)
+            try:
+                g = Gallery.objects.get(pk=int(gallery))
+            except (ValueError, Gallery.DoesNotExist):
+                raise Http404
+            g.tags.remove(obj)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
