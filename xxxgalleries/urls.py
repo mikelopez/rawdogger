@@ -22,8 +22,8 @@ urlpatterns = patterns('',
 
     url(r'^banners/add', CreateBanners.as_view(), name="banners_add"),
     url(r'^banners/update/(?P<pk>\d+)/$', UpdateBanners.as_view(), name="banners_update"),
-    url(r'^banners/', BannersView.as_view(), name="banners_view"),
     url(r'^banners/(?P<pk>\d+)/$', BannersDetailView.as_view(), name="banners_detail"),
+    url(r'^banners/', BannersView.as_view(), name="banners_view"),
     
     url(r'^tag/(?P<pk>\d+)/$', TagsDetailView.as_view(), name="tags_detail"),
     url(r'^tags/', TagsView.as_view(), name="tags_view"),
