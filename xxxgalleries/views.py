@@ -123,6 +123,11 @@ class ProviderDetailView(DetailView):
         """Get the object"""
         object = super(ProviderDetailView, self).get_object(**kwargs)
         return object
+    def get_context_data(self, **kwargs):
+        context = super(ProvideryDetailView, self).get_context_data(**kwargs)
+        context['galleries_count'] = Galleries.objects.filter(provider=context.get('object'))
+        context['banners_count'] = Banners.objects.filter(provider=context.get('object'))
+        return context
 
 
 
