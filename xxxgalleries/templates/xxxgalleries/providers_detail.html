@@ -12,12 +12,20 @@
 
     <div class="linebreak10"></div>
     <hr />
-    <div style="width:300px;" >Name:<b> {{object.name}}</b>
-    Login: <a href="{{object.login_url}}">{{object.login_url}}</a><br />
-    Username: {{object.username}}<br />
-    Password: {{object.password}}<br />
-    Website: {{object.website}}<br />
-    CCBill: {{object.ccbill}}<br />
+    
+    <div class="pull-left" style="width:300px;" >
+        Name:<b> {{object.name}}</b>
+        Login: <a href="{{object.login_url}}">{{object.login_url}}</a><br />
+        Username: {{object.username}}<br />
+        Password: {{object.password}}<br />
+        Website: {{object.website}}<br />
+        CCBill: {{object.ccbill}}<br />
+    </div>
+    <div class="pull-right" style="width:400px;">
+        Galleries: {{object.banners_count}}
+        <br />
+        Banners: {{object.galleries_count}}
+    </div>
 {% endblock %}
 
 {% block action_button %}
