@@ -42,7 +42,7 @@ class Gallery(models.Model):
             ('video', 'video'),
             ('both', 'both'))
 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
     content = models.CharField(max_length=10, choices=CONTENT, 
                                 help_text="Select the type of content",
                                 verbose_name="Content Type")
@@ -58,6 +58,7 @@ class Gallery(models.Model):
     provider = models.ForeignKey('Providers')
     tags = models.ManyToManyField('Tags', blank=True, null=True)
     banners = models.ManyToManyField('Banners', blank=True, null=True)
+    filter_name = models.CharField(max_length=50, blank=True, null=True)
     @property
     def thumbnail(self):
         for i in self.galleryitem_set.select_related():
@@ -136,6 +137,16 @@ class Gallery(models.Model):
                         files.append(filename)
             return files
         return None
+
+    def save(self):
+        super(Gallery, self).save()
+        # set filtername if not self.filter_name
+        if not getattr(self, 'filter_name', None):
+            nm = getattr(self, 'name', '')
+            nm = nm.lower().replace(' ', '_')\
+                           .replace('#', '--')\
+                           .replace('.', '')
+            setattr(self, 'filter_name', nm)
 
 
 class Providers(models.Model):

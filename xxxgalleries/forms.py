@@ -7,7 +7,8 @@ class GalleryForm(ModelForm):
     """Gallery Custom form"""
     class Meta:
         model = Gallery
-        exclude = ('tags','thumb_url', 'thumb_upload', 'banners',)
+        exclude = ('tags','thumb_url', 'thumb_upload', 
+                   'banners', 'filter_name')
 
     def __init__(self, *args, **kwargs):
         super(GalleryForm, self).__init__(*args, **kwargs)
