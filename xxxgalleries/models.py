@@ -139,7 +139,6 @@ class Gallery(models.Model):
         return None
 
     def save(self):
-        super(Gallery, self).save()
         # set filtername if not self.filter_name
         if not getattr(self, 'filter_name', None):
             nm = getattr(self, 'name', '')
@@ -147,6 +146,7 @@ class Gallery(models.Model):
                            .replace('#', '--')\
                            .replace('.', '')
             setattr(self, 'filter_name', nm)
+        super(Gallery, self).save()
 
 
 class Providers(models.Model):
