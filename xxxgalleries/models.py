@@ -194,6 +194,10 @@ class Tags(models.Model):
     def count_galleries(self):
         """Returns count of related galleries"""
         return self.gallery_set.all().count()
+    def __str__(self):
+        return str(self.name)
+    def __unicode__(self):
+        return unicode(self.name)
 
 
 class Banners(models.Model):
@@ -208,6 +212,10 @@ class Banners(models.Model):
     width = models.IntegerField(blank=True, null=True, default=0)
     height = models.IntegerField(blank=True, null=True, default=0)
     provider = models.ForeignKey('Providers')
+    def __str__(self):
+        return str(self.name)
+    def __unicode__(self):
+        return unicode(self.name)
     def get_absolute_url(self):
         return reverse('banners_detail', kwargs={'pk': self.pk})
     def count_galleries(self):
