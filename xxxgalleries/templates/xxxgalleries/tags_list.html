@@ -6,11 +6,12 @@ tags_{% extends "xxxgalleries/base.html" %}
 {% block table_list %}
 
   <table class="table table-bordered table-striped" style="width:400px;font-size:14px;">
-    <tr><td width="250">Name</td><td width="200">Galleries</td></tr>
+      <tr><td width="250">Name</td><td width="200">Pic Galleries</td><td>Video Galleries</td></tr>
     {% for i in object_list %}
     <tr>
       <td><a href="{% url 'tags_detail' pk=i.id %}">{{ i.name }}</a></td>
-      <td>{{ i.count_galleries }} </td>
+      <td>{{ i.count_pic_galleries }} </td>
+      <td>{{ i.count_video_galleries }} </td>
     </tr>
     {% endfor %}
    </table>

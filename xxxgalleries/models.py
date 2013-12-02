@@ -1,12 +1,16 @@
 import os
+import urllib
+import Image
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
-MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
 
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
 LOCAL_TYPE = 'local'
 LOCAL_MIXED = 'local-mix'
 HOSTED_TYPE = 'hosted'
+
+from resize import *
 
 class GalleryItem(models.Model):
     """
@@ -16,9 +20,9 @@ class GalleryItem(models.Model):
     This will be used for local galleries.
     """
     name = models.CharField(max_length=50, blank=True, null=True)
-    thumb = models.TextField(blank=True, null=True)
-    filename = models.CharField(blank=True, null=True, max_length=100)
-    link = models.TextField(blank=True, null=True)
+    thumb = models.NullBooleanField(blank=True, null=True)
+    filename = models.CharField(blank=True, null=True, max_length=100, default=None)
+    link = models.TextField(blank=True, null=True, default=None)
     gallery = models.ForeignKey('Gallery', blank=True, null=True)
     program_type = models.ForeignKey('ProgramTypes', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -42,7 +46,7 @@ class Gallery(models.Model):
             ('video', 'video'),
             ('both', 'both'))
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     content = models.CharField(max_length=10, choices=CONTENT, 
                                 help_text="Select the type of content",
                                 verbose_name="Content Type")
@@ -59,14 +63,36 @@ class Gallery(models.Model):
     tags = models.ManyToManyField('Tags', blank=True, null=True)
     banners = models.ManyToManyField('Banners', blank=True, null=True)
     filter_name = models.CharField(max_length=50, blank=True, null=True)
+
+    def get_thumb(self):
+        thumb = "thumb.jpg"
+        return '<img width="120" height="120" src="/media/galleries/%s/%s" />' % (self.media_folder, thumb)
+    get_thumb.allow_tags = True
+
     @property
     def thumbnail(self):
+        """
+        First check the gallery item related objects.
+        If not found, check the media_folder for any 'thumb.jpg' files
+        If not, finally, check self.thumb_url for a remote thumb URL to use.
+        """
         for i in self.galleryitem_set.select_related():
             if 'thumb' in getattr(i, 'filename'):
-                return getattr(i, 'filename')
-        for i in self.show_media():
-            if 'thumb' in i:
-                return i
+                return "/media/galleries/%s/%s" % (self.media_folder,
+                                                  getattr(i, 'filename'))
+
+        if self.get_media_folder():
+            if getattr(self, 'content', 'pic') == 'pic':
+                if os.path.exists('%s/thumbs/v/thumb.jpg' % (self.get_media_directory())):
+                    return "/media/galleries/%s/thumbs/v/thumb.jpg" % (self.media_folder)
+            if getattr(self, 'content', 'video') == 'video':
+                if os.path.exists('%s/thumbs/h/thumb.jpg' % (self.get_media_directory())):
+                    return "/media/galleries/%s/thumbs/h/thumb.jpg" % (self.media_folder)
+
+        if self.thumb_url:
+            if "http" in self.thumb_url:
+                return self.thumb_url
+            return None
         return None
 
     @property
@@ -116,12 +142,17 @@ class Gallery(models.Model):
 
     def get_media_directory(self):
         """Returns the media directory string for this gallery."""
-        return '%s/galleries/%s' % (MEDIA_ROOT, 
+        return '%sgalleries/%s' % (MEDIA_ROOT, 
                                    getattr(self, 'media_folder'))
 
     def get_media_folder(self):
         """Checks if the directory is found."""
         return os.path.exists(self.get_media_directory())
+
+    def create_media_folder(self):
+        """Creates the media folder"""
+        if not self.get_media_folder():
+            os.system('mkdir %s' % self.get_media_directory())
 
     def show_media(self):
         """Showa the media if the gallery is local"""
@@ -138,6 +169,13 @@ class Gallery(models.Model):
             return files
         return None
 
+    def create_thumb_dirs(self):
+        """Creates the required thumbnail directories."""
+        os.system('mkdir %s/thumbs' % (self.get_media_directory()))
+        os.system('mkdir %s/thumbs/v' % (self.get_media_directory()))
+        os.system('mkdir %s/thumbs/h' % (self.get_media_directory()))
+
+
     def save(self):
         # set filtername if not self.filter_name
         if not getattr(self, 'filter_name', None):
@@ -146,6 +184,33 @@ class Gallery(models.Model):
                            .replace('#', '--')\
                            .replace('.', '')
             setattr(self, 'filter_name', nm)
+        # auto create the media folder
+        self.create_media_folder()
+        if getattr(self, 'thumb_url', None):
+            if not os.path.exists('%s/thumbs' % (self.get_media_directory())):
+                self.create_thumb_dirs()
+
+            # if no thumb.jpg file, download the thumb_url
+            if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                if self.content == 'pic':
+                    if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                        urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                if self.content == 'video':
+                    if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                        urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+
+            # try to resize
+            if self.content == 'pic':
+                if not os.path.exists('%s/thumbs/v/thumb.jpg' % (self.get_media_directory())):
+                    im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                    imnew = cropped_thumbnail(im, [250, 300])
+                    imnew.save('%s/thumbs/v/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
+            if self.content == 'video':
+                if not os.path.exists('%s/thumbs/h/thumb.jpg' % (self.get_media_directory())):
+                    im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                    imnew = cropped_thumbnail(im, [320, 220])
+                    imnew.save('%s/thumbs/h/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
+
         super(Gallery, self).save()
 
 
@@ -191,9 +256,13 @@ class Tags(models.Model):
     """Hashtag or categorize a gallery"""
     name = models.CharField(max_length=50)
     @property
-    def count_galleries(self):
+    def count_pic_galleries(self):
         """Returns count of related galleries"""
-        return self.gallery_set.all().count()
+        return self.gallery_set.filter(content='pic').count()
+    @property
+    def count_video_galleries(self):
+        """Returns count of related galleries"""
+        return self.gallery_set.filter(content='video').count()
     def __str__(self):
         return str(self.name)
     def __unicode__(self):

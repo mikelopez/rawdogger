@@ -4,8 +4,11 @@
 {% block heading %}Gallery: {{object.name}}{% endblock %}
 
 {% block detail_view %}
-    <div class="pull-left" style="width:680px;">
+    <div class="pull-left" style="width:550px;">
         <table class="table table-bordered table-striped">
+            <tr>
+                <td>Type</td><td>{{object.content}}</td>
+            </tr>
             <tr>
                 <td>Jump Link</td><td>{{object.hosted_jump_link}}</td>
             </tr>
@@ -71,9 +74,14 @@
             </tr>
         </table>
     </div>
-    <div class="pull-right" style="width:220px;height:300px;background-color:#fff;color:#000;">
-            {% if thumbnail %}
-                <img src="/media/galleries/{{object.media_folder}}/{{thumbnail.filename}}" width="250" height="270"/>
+    <div class="pull-right" style="background-color:#fff;color:#000;">
+        {% if object.thumbnail %}
+                {% ifequal object.content 'pic' %}
+                    <img src="{{object.thumbnail}}" width="250" height="300"/>
+                {% endifequal %} 
+                {% ifequal object.content 'video' %}
+                     <img src="{{object.thumbnail}}" width="320" height="250" />
+                {% endifequal %}
             {% else %}
                 NO THUMB
             {% endif %}

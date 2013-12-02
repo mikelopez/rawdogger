@@ -6,21 +6,45 @@
 {% block table_list %}
 
 
-   {% for i in galleries %}
-        <div class="pull-left" style="margin-right:20px;margin-bottom:10px;height:300px;text-align:center;background-color:#fff;">
-            <a href="{% url 'gallery_detail' pk=i.id %}" target="_blank">
-                <img src="/media/galleries/{{i.media_folder}}/{{i.thumbnail}}" style="height:250px;" width="200" height="250" />
-            </a>
-            <div style="width:100%;height:50px;color:#000;padding:5px;text-align:left;">
-                <b>{{i.name}}</b><br />
-                {% if i.in_sync %}<span class="label label-success">IN SYNC</span>{% else %}
-                    <span class="label label-warning">NOT SYNC</span>{% endif %}
-                
+    {% for i in galleries %}
+        {% ifequal i.content 'pic' %}
+            <div class="pull-left" style="margin-right:20px;margin-bottom:10px;text-align:center;background-color:#fff;">
+                <a href="{% url 'gallery_detail' pk=i.id %}" target="_blank">
+                    <img src="{{i.thumbnail}}" width="250" style="height:300px;" height="300" />
+                </a>
+                <div style="width:100%;height:50px;color:#000;padding:5px;text-align:left;">
+                    <b>{{i.name}}</b><br />
+                    {% if i.in_sync %}<span class="label label-success">IN SYNC</span>{% else %}
+                        <span class="label label-warning">NOT SYNC</span>{% endif %}
+                    
+                </div>
             </div>
-        </div>
-   {% endfor %}
+           {% endifequal %}
+    {% endfor %}
 
- {% endblock %}
+    <div class="linebreak10"></div>
+    <hr />
+    <h2>Video Galleries</h2>
+    <div class="linebreak10"></div>
+
+    {% for i in galleries %}
+        {% ifequal i.content 'video' %}
+            <div class="pull-left" style="width:320px;margin-right:20px;margin-bottom:10px;text-align:center;background-color:#fff;">
+                <a href="{% url 'gallery_detail' pk=i.id %}" target="_blank">
+                    <img src="{{i.thumbnail}}" width="320" style="height:220px;" height="220" />
+                </a>
+                <div style="width:100%;height:50px;color:#000;padding:5px;text-align:left;">
+                    <b>{{i.name}}</b><br />
+                    {% if i.in_sync %}<span class="label label-success">IN SYNC</span>{% else %}
+                        <span class="label label-warning">NOT SYNC</span>{% endif %}
+                    
+                </div>
+            </div>
+            {% endifequal %}
+    {% endfor %}
+
+
+{% endblock %}
 
 
 {% block action_button %}
