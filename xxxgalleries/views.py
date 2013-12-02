@@ -25,7 +25,7 @@ class UpdateInstanceView(UpdateView):
 
 class IndexView(TemplateView):
     """ About Page View """
-    template_name = "index.html"
+    template_name = "xxxgalleries/index.html"
 
 
 class GalleryView(ListView):
@@ -124,9 +124,9 @@ class ProviderDetailView(DetailView):
         object = super(ProviderDetailView, self).get_object(**kwargs)
         return object
     def get_context_data(self, **kwargs):
-        context = super(ProvideryDetailView, self).get_context_data(**kwargs)
-        context['galleries_count'] = Galleries.objects.filter(provider=context.get('object'))
-        context['banners_count'] = Banners.objects.filter(provider=context.get('object'))
+        context = super(ProviderDetailView, self).get_context_data(**kwargs)
+        context['galleries_count'] = Gallery.objects.filter(provider=context.get('object')).count()
+        context['banners_count'] = Banners.objects.filter(provider=context.get('object')).count()
         return context
 
 

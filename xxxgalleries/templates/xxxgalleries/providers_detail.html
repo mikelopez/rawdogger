@@ -20,18 +20,20 @@
         Password: {{object.password}}<br />
         Website: {{object.website}}<br />
         CCBill: {{object.ccbill}}<br />
+        <div class="linebreak10"></div>
+        <div class="linebreak10"></div>
+        <input type="button" class="btn btn-info pull-left" value="Back to Providers" 
+                onclick="window.location='{% url 'providers_view' %}';"/>
     </div>
     <div class="pull-right" style="width:400px;">
-        Galleries: {{object.banners_count}}
+        Galleries: {{banners_count}}
         <br />
-        Banners: {{object.galleries_count}}
+        Banners: {{galleries_count}}
     </div>
 {% endblock %}
 
 {% block action_button %}
     <input type="button" class="btn btn-warning pull-right" value="Edit" 
     onclick="window.location='{% url 'providers_update' pk=object.id %}';"/><br /><br />
-    <input type="button" class="btn btn-info pull-right" value="Back to Providers" 
-                onclick="window.location='{% url 'providers_view' %}';"/>
 {% endblock %}
 

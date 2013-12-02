@@ -1,9 +1,19 @@
-<html>
-  <head>
-    <title>About page</title>
-  </head>
-  <body>
-    About page body
-  </body>
-</html>
+{% extends "xxxgalleries/base.html" %}
 
+{% block title %}All Galleries{% endblock %}
+{% block heading %}Rawdogger{% endblock %}
+
+{% block table_list %}
+
+<a style="width:120px;" class="btn btn-large btn-danger" href="{% url 'providers_view' %}"><b>Providers</b></a>
+<br /><br />
+<a style="width:120px;" class="btn btn-large btn-success" href="{% url 'galleries_view' %}"><b>Galleries</b></a>
+<br /><br />
+<a style="width:120px;" class="btn btn-large btn-warning" href="{% url 'banners_view' %}"><b>Banners</b></a>
+<br /><br />
+
+{% endblock %}
+
+ {% block action_button %}
+ 
+ {% endblock %}

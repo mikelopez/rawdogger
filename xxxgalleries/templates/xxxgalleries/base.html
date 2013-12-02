@@ -4,10 +4,10 @@
   <head>
       <title>{% block title %}Title{% endblock %}</title>
       
-        {% block load_bootstrap_css %}
-          <link href="{% static 'bootstrap-dark/css/bootstrap.css' %}" rel="stylesheet" />
+      {% block load_bootstrap_css %}
+         <link href="{% static 'bootstrap-dark/css/bootstrap.css' %}" rel="stylesheet" />
         {% endblock %} 
-        {% block load_jquery %}
+       {% block load_jquery %}
           <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
         {% endblock %}
         {% block load_bootstrap_js %}
@@ -45,20 +45,21 @@
                 <div class="nav-collapse">
                   <ul class="nav">
 
-                    <li><a href="{% url 'galleries_view' %}">Galleries</a></li>
-                    <li><a href="{% url 'providers_view' %}">Providers</a></li>
-                    <li><a href="{% url 'tags_view' %}">Tags Report</a></li>
-                    <li><a href="{% url 'banners_view' %}">Banners</a></li>
+                    <li><a href="{% url 'xxx_index' %}">Home</a></li>
                     <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tags<b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources<b class="caret"></b></a>
                       <ul class="dropdown-menu">
-                        <li><a href="#">Add Categories</a></li>
+                        <!--li><a href="#">Add Categories</a></li-->
                         <li><a href="{% url 'galleries_add' %}">New Gallery</a></li>
-                        <li><a href="{% url 'providers_add' %}">Manage Providers</a></li>
-                        <li><a href="#">Separated link</a></li>
+                        <li><a href="{% url 'providers_add' %}">New Provider</a></li>
+                        <li><a href="{% url 'banners_add' %}">New Banners</a></li>
                         
-                        <!--li class="divider"></li>
-                        <li><a href="#">Separated link</a></li-->
+                        <li class="divider"></li>
+                        <li><a href="{% url 'galleries_view' %}">Galleries</a></li>
+                        <li><a href="{% url 'providers_view' %}">Providers</a></li>
+                        <li><a href="{% url 'tags_view' %}">Tags Report</a></li>
+                        <li><a href="{% url 'banners_view' %}">Banners</a></li>
+                        
                       </ul>
                     </li>
                   </ul>
@@ -66,15 +67,15 @@
                     <input type="text" class="search-query span2" placeholder="Search">
                   </form-->
                   <ul class="nav pull-right">
-                    <li><a href="#">Link</a></li>
+                    <li><a href="#">Login</a></li>
                     
                     <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret"></b></a>
                       <ul class="dropdown-menu">
-                        <li><a href="/mainweb/">Mainweb</a></li>
+                        <li><a href="/mainweb/">Mainweb Admin</a></li>
                         
-                        <li class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
+                        <!--li class="divider"></li>
+                        <li><a href="#">Separated link</a></li-->
                       </ul>
                     </li>
                   </ul>

@@ -9,7 +9,7 @@ from xxxgalleries.views import IndexView, \
         
 
 urlpatterns = patterns('',
-    url(r'^$', GalleryView.as_view(), name="xxx_index"),
+    url(r'^$', IndexView.as_view(), name="xxx_index"),
     url(r'^gallery/add', CreateGallery.as_view(), name="galleries_add"),
     url(r'^gallery/update/(?P<pk>\d+)/$', UpdateGallery.as_view(), name="galleries_update"),
     url(r'^gallery/', GalleryView.as_view(), name="galleries_view"),
