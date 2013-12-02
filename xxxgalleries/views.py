@@ -33,6 +33,9 @@ class GalleryView(ListView):
     queryset = Gallery.objects.all().order_by('-id')
     model = Gallery
     paginate_by = 16
+    def get_queryset(self, **kwargs):
+        return Gallery.objects.filter(content=self.request.GET.get('content', 'pic')).order_by('-id')
+
     def get_context_data(self, **kwargs):
         context = super(GalleryView, self).get_context_data(**kwargs)
         context['tags'] = Tags.objects.all().order_by('name')

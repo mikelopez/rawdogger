@@ -23,9 +23,22 @@
     
     {% for i in object_list %}
         {% ifequal i.content 'pic' %}
-        <div class="pull-left" style="margin-right:20px;margin-bottom:10px;text-align:center;background-color:#fff;">
+        <div class="pull-left" style="width:250px;margin-right:20px;margin-bottom:10px;text-align:center;background-color:#fff;">
             <a href="{% url 'gallery_detail' pk=i.id %}" target="_blank">
                 <img src="{{i.thumbnail}}" width="250" style="height:300px;" height="300" />
+            </a>
+            <div style="width:100%;height:50px;color:#000;padding:5px;text-align:left;">
+                <b>{{i.name}}</b><br />
+                {% if i.in_sync %}<span class="label label-success">IN SYNC</span>{% else %}
+                    <span class="label label-warning">NOT SYNC</span>{% endif %}
+                
+            </div>
+        </div>
+        {% endifequal %}
+        {% ifequal i.content 'video' %}
+        <div class="pull-left" style="width:320px;margin-right:20px;margin-bottom:10px;text-align:center;background-color:#fff;">
+            <a href="{% url 'gallery_detail' pk=i.id %}" target="_blank">
+                <img src="{{i.thumbnail}}" width="320" style="height:220px;" height="220" />
             </a>
             <div style="width:100%;height:50px;color:#000;padding:5px;text-align:left;">
                 <b>{{i.name}}</b><br />
@@ -62,7 +75,11 @@
  {% block action_button %}
 <div class="pull-right" style="width:400px;text-align:right;">
     <input type="button" class="btn btn-info pull-right" value="Add Gallery" 
-                onclick="window.location='{% url 'galleries_add' %}';"/>
+                onclick="window.location='{% url 'galleries_add' %}';"/><br /><br />
+    <input type="button" class="btn btn-info pull-right" value="Picture Galleries" 
+                onclick="window.location='{% url 'galleries_view' %}?content=pic';"/><br /><br />
+    <input type="button" class="btn btn-info pull-right" value="Video Galleries" 
+                onclick="window.location='{% url 'galleries_view' %}?content=video';"/><br /><br />
     <br /><br />
     Filter by Tag 
     <select onchange="window.location='/xxxgalleries/tag/'+this.value + '/';">
