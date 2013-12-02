@@ -195,21 +195,35 @@ class Gallery(models.Model):
                 if self.content == 'pic':
                     if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
                         urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                        # retry without the .mini...
+                        if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())) == 0:
+                            try:
+                                urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                            except:
+                                pass
+
                 if self.content == 'video':
                     if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
                         urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                        if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())) == 0:
+                            try:
+                                urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                            except:
+                                pass
 
             # try to resize
             if self.content == 'pic':
                 if not os.path.exists('%s/thumbs/v/thumb.jpg' % (self.get_media_directory())):
-                    im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
-                    imnew = cropped_thumbnail(im, [250, 300])
-                    imnew.save('%s/thumbs/v/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
+                    if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                        im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                        imnew = cropped_thumbnail(im, [250, 300])
+                        imnew.save('%s/thumbs/v/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
             if self.content == 'video':
                 if not os.path.exists('%s/thumbs/h/thumb.jpg' % (self.get_media_directory())):
-                    im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
-                    imnew = cropped_thumbnail(im, [320, 220])
-                    imnew.save('%s/thumbs/h/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
+                    if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                        im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                        imnew = cropped_thumbnail(im, [320, 220])
+                        imnew.save('%s/thumbs/h/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
 
         super(Gallery, self).save()
 
