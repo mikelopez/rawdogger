@@ -275,14 +275,23 @@ class ProgramTypes(models.Model):
 class Tags(models.Model):
     """Hashtag or categorize a gallery"""
     name = models.CharField(max_length=50)
+    cache_picgalleries_count = models.IntegerField(default=0)
+    cache_vidgalleries_count = models.IntegerField(default=0)
     @property
     def count_pic_galleries(self):
         """Returns count of related galleries"""
-        return self.gallery_set.filter(content='pic').count()
+        c =  self.gallery_set.filter(content='pic').count()
+        self.cache_picgalleries_count = c
+        self.save()
+        return c
     @property
     def count_video_galleries(self):
         """Returns count of related galleries"""
-        return self.gallery_set.filter(content='video').count()
+        c = self.gallery_set.filter(content='video').count()
+        self.cache_vidgalleries_count = c
+        self.save()
+        return c
+
     def __str__(self):
         return str(self.name)
     def __unicode__(self):
