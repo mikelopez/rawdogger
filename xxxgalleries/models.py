@@ -58,6 +58,8 @@ class Gallery(models.Model):
     thumb_upload = models.ImageField(upload_to='gallery_thumbs', 
                                      blank=True, null=True,
                                      help_text="Or Upload a thumbnail instead")
+    video_url = models.TextField(blank=True, null=True,
+                                verbose_name="Video url")
     hosted_jump_link = models.TextField(blank=True, null=True)
     provider = models.ForeignKey('Providers')
     tags = models.ManyToManyField('Tags', blank=True, null=True)
@@ -277,6 +279,9 @@ class Tags(models.Model):
     name = models.CharField(max_length=50)
     cache_picgalleries_count = models.IntegerField(default=0)
     cache_vidgalleries_count = models.IntegerField(default=0)
+    main_tag = models.NullBooleanField(default=False)
+    site_tag = models.NullBooleanField(default=False)
+    model_tag = models.NullBooleanField(default=False)
     @property
     def count_pic_galleries(self):
         """Returns count of related galleries"""

@@ -5,13 +5,37 @@ tags_{% extends "xxxgalleries/base.html" %}
 
 {% block table_list %}
 
-  <table class="table table-bordered table-striped" style="width:400px;font-size:14px;">
-      <tr><td width="250">Name</td><td width="200">Pic Galleries</td><td>Video Galleries</td></tr>
+  <table class="table table-bordered table-striped" style="width:800px;font-size:14px;">
+      <tr><td>ID</td><td>Name</td><td>Pic</td><td>Video</td>
+          <td>Main tag</td><td>Model tag</td><td>Site tag</td><td>Update</td>
+      </tr>
     {% for i in object_list %}
     <tr>
+      <td><b>{{i.id}}</b></td>
       <td><a href="{% url 'tags_detail' pk=i.id %}">{{ i.name }}</a></td>
-      <td>{{ i.count_pic_galleries }} </td>
-      <td>{{ i.count_video_galleries }} </td>
+      <td>{{ i.cache_picgalleries_count }} </td>
+      <td>{{ i.cache_vidgalleries_count }} </td>
+      <td>
+          {% if i.main_tag %}
+            <input type="checkbox" name="tagit" id="tag_main_check_{{i.id}}" 
+                class="tag-check pull-left" checked />&nbsp;&nbsp;
+            <span id="tag_main_{{i.id}}" class="taglabel label label-success pull-left">Main</span>
+          {% else %}
+            <input type="checkbox" name="tagit" id="tag_main_check_{{i.id}}" 
+                class="pull-left tag-check" />&nbsp;&nbsp;
+            <span id="tag_main_{{i.id}}" class="taglabel label label-danger pull-left">Main</span>
+
+          {% endif %}
+      </td>
+      <td>
+          <span id="tag_model_{{i.id}}" class="label label-success">Model</span>
+      </td>
+      <td>
+          <span id="no_tag_site_{{i.id}}" class="label label-danger">Site</span>
+      </td>
+      <td>
+          <input type="button" class="btn btn-small btn-default" value="Update counts" />
+      </td>
     </tr>
     {% endfor %}
    </table>
