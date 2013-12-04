@@ -317,8 +317,11 @@ class Tags(models.Model):
                     pass
             thmb = self.gallery_set.filter(content='pic')[rands]
 
-            obj, created = PicTagFaces.objects.get_or_create(tag=self)
-            obj.gallery = thmb
+            try:
+                obj = PicTagFaces.objects.get(tag=self)
+                obj.gallery = thmb                
+            except PicTagFaces.DoesNotExist:
+                obj = PicTagFaces.(gallery=thmb, tag=self)
             obj.save()
         except (IndexError, AttributeError):
             pass
