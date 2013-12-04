@@ -316,7 +316,7 @@ class Tags(models.Model):
                 except:
                     pass
             thmb = self.gallery_set.filter(content='pic')[rands]
-            
+
             obj, created = PicTagFaces.objects.get_or_create(tag=self)
             obj.gallery = thmb
             obj.save()
@@ -359,7 +359,14 @@ class Banners(models.Model):
         return self.gallery_set.all().count()
 
 
-class TagFaces(models.Model):
+class PicTagFaces(models.Model):
+    """
+    Contains the gallery reference for a main tag.
+    """
+    gallery = models.ForeignKey('Gallery')
+    tag = models.ForeignKey('Tags')
+
+class VidTagFaces(models.Model):
     """
     Contains the gallery reference for a main tag.
     """
