@@ -321,7 +321,7 @@ class Tags(models.Model):
                 obj = PicTagFaces.objects.get(tag=self)
                 obj.gallery = thmb                
             except PicTagFaces.DoesNotExist:
-                obj = PicTagFaces.(gallery=thmb, tag=self)
+                obj = PicTagFaces(gallery=thmb, tag=self)
             obj.save()
         except (IndexError, AttributeError):
             pass
