@@ -190,38 +190,45 @@ class Gallery(models.Model):
             setattr(self, 'filter_name', nm)
         # auto create the media folder
         self.create_media_folder()
+
+        # if thumbnail URL exists in field and thumb.jpg does not exist.
         if getattr(self, 'thumb_url', None):
-            if not os.path.exists('%s/thumbs' % (self.get_media_directory())):
+            mdir = self.get_media_directory()
+            thumb_dir = "%s/thumbs/thumb.jpg" % (mdir)
+            h_thumb_dir = "%s/thumbs/h/thumb.jpg" % (mdir)
+            v_thumb_dir = "%s/thumbs/v/thumb.jpg" % (mdir)
+
+            if not os.path.exists('%s/thumbs' % (mdir)):
                 self.create_thumb_dirs()
 
             # if no thumb.jpg file, download the thumb_url
-            if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
-                if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
-                    urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+            if not os.path.exists(thumb_dir):
+                if not os.path.exists(thumb_dir):
+                    urllib.urlretrieve(getattr(self, 'thumb_url'), '%s' % (thumb_dir))
                     # retry without the .mini...
-                    if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())) == 0:
+                    if os.path.getsize(thumb_dir) == 0:
                         try:
-                            urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                            urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s' % (thumb_dir))
                         except:
                             pass
 
-            # try to resize
+            # try to resize only if they dont exist
             if self.content == 'pic':
-                if not os.path.exists('%s/thumbs/v/thumb.jpg' % (self.get_media_directory())):
-                    if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                if not os.path.exists(v_thumb_dir):
+                    if os.path.getsize(thumb_dir):
                         try:
-                            im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                            im = Image.open(thumb_dir)
                             imnew = cropped_thumbnail(im, [250, 300])
-                            imnew.save('%s/thumbs/v/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
+                            imnew.save(v_thumb_dir, 'JPEG', quality=100)
                         except:
                             pass
             if self.content == 'video':
-                if not os.path.exists('%s/thumbs/h/thumb.jpg' % (self.get_media_directory())):
-                    if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                if not os.path.exists(h_thumb_dir):
+                    if os.path.getsize(thumb_dir):
                         try:
-                            im = Image.open('%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                            im = Image.open(thumb_dir)
                             imnew = cropped_thumbnail(im, [320, 220])
-                            imnew.save('%s/thumbs/h/thumb.jpg' % (self.get_media_directory()), 'JPEG', quality=100)
+                            imnew.save(h_thumb_dir, 'JPEG', quality=100)
                         except:
                             pass
 
