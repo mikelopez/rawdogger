@@ -142,9 +142,13 @@ class Gallery(models.Model):
                 result = True
         return result
 
-    @property 
-    def media_folder_exists(self):
+    def admin_missing_images(self):
+        return self.missing_images
+    admin_missing_images.boolean = True
+    
+    def admin_media_folder_found(self):
         return self.get_media_folder()
+    admin_media_folder_found.boolean = True
 
     def get_absolute_url(self):
         return reverse('gallery_detail', kwargs={'pk': self.pk})
