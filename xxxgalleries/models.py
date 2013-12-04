@@ -8,6 +8,7 @@ from django.conf import settings
 
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+GALLERY_AUTO_CREATE_MEDIA_FOLDER = getattr(settings, "GALLERY_AUTO_CREATE_MEDIA_FOLDER", False)
 LOCAL_TYPE = 'local'
 LOCAL_MIXED = 'local-mix'
 HOSTED_TYPE = 'hosted'
@@ -109,7 +110,7 @@ class Gallery(models.Model):
 
     @property
     def is_sync(self):
-        """Checks if theere is gallery items for each image in this gallery."""
+        """Checks if there is gallery items for each image in this gallery."""
         items = self.galleryitem_set.select_related()
         if not items:
             return False
@@ -179,7 +180,6 @@ class Gallery(models.Model):
         os.system('mkdir %s/thumbs/v' % (self.get_media_directory()))
         os.system('mkdir %s/thumbs/h' % (self.get_media_directory()))
 
-
     def save(self):
         # set filtername if not self.filter_name
         if not getattr(self, 'filter_name', None):
@@ -188,8 +188,10 @@ class Gallery(models.Model):
                            .replace('#', '--')\
                            .replace('.', '')
             setattr(self, 'filter_name', nm)
-        # auto create the media folder
-        self.create_media_folder()
+
+        # auto create the media folder only if the settings say so
+        if GALLERY_AUTO_CREATE_MEDIA_FOLDER:
+            self.create_media_folder()
 
         # if thumbnail URL exists in field and thumb.jpg does not exist.
         if getattr(self, 'thumb_url', None):
@@ -296,15 +298,15 @@ class Tags(models.Model):
         self.save()
         return c
 
-    def get_vid_thumb(self):
+    def update_vid_thumb(self):
         """Return the video thumbnail"""
         return None
 
     @property
-    def get_pic_thumb(self, try_video=False):
-        """Gets a pic thumbnail from a gallery.
-        set try_video=True to try to find a video gallery thumbnail 
-        when there is no picture galleries."""
+    def update_pic_thumb(self, try_video=False):
+        """Updates the picture thumbnail gallery to use for 
+        the front face of the tag catgegory when using a 
+        picture gallery to represent it."""
         try:
             counts = self.gallery_set.filter(content='pic').count()
             rands = 0
@@ -314,10 +316,18 @@ class Tags(models.Model):
                 except:
                     pass
             thmb = self.gallery_set.filter(content='pic')[rands]
-            return thmb.thumbnail
+            
+            obj, created = PicTagFaces.objects.get_or_create(tag=self)
+            obj.gallery = thmb
+            obj.save()
         except (IndexError, AttributeError):
-            if try_video:
-                return self.get_vid_thumb()
+            pass
+
+    def get_tag_face(self):
+        """Returns the tag face gallery"""
+        try:
+            return TagFaces.objects.get(tag=self).gallery
+        except (TagFaces.DoesNotExist, AttributeError):
             return None
 
     def __str__(self):
@@ -347,3 +357,11 @@ class Banners(models.Model):
     def count_galleries(self):
         """Returns count of related galleries"""
         return self.gallery_set.all().count()
+
+
+class TagFaces(models.Model):
+    """
+    Contains the gallery reference for a main tag.
+    """
+    gallery = models.ForeignKey('Gallery')
+    tag = models.ForeignKey('Tags')
