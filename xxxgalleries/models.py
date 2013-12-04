@@ -323,10 +323,10 @@ class Tags(models.Model):
         except (IndexError, AttributeError):
             pass
 
-    def get_tag_face(self):
+    def get_pic_tag_thumb(self):
         """Returns the tag face gallery"""
         try:
-            return TagFaces.objects.get(tag=self).gallery
+            return PicTagFaces.objects.get(tag=self).gallery.thumbnail
         except (TagFaces.DoesNotExist, AttributeError):
             return None
 
