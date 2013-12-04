@@ -352,16 +352,12 @@ class Tags(models.Model):
 
     def get_pic_tag_thumb(self):
         """Returns the tag face gallery"""
-        return "/media/galleries/%s/thumbs/v/thumb.jpg" % \
-                PicTagFaces.objects.get(tag=self).gallery.media_folder
         if DEBUG:
             termprint("SUCCESS", "%s get_pic_tag_thumb()" % (datetime.now()))
         try:
-            obj = PicTagFaces.objects.get(tag=self).gallery.thumbnail
-            if DEBUG:
-                termprint("SUCCES", "%s --- return obj" % (datetime.now()))
+            return PicTagFaces.objects.get(tag=self).gallery_thumb
         except (PicTagFaces.DoesNotExist, AttributeError):
-            return None
+            return "#"
 
     def __str__(self):
         return str(self.name)
