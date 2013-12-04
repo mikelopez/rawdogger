@@ -1,34 +1,89 @@
+import simplejson
 from django.views.generic import TemplateView, ListView, View,\
                                  DetailView, CreateView, UpdateView
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from models import Gallery, Providers, Tags, Banners
 from forms import GalleryForm, ProvidersForm, BannersForm
+from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 from django.conf import settings
+
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT")
 
 
-class UpdateInstanceView(UpdateView):
+class UpdateInstanceView( UpdateView):
     """Todo:
     update providers and banners classes
     to update views to use base UpdateInstanceView
     """
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        clean = form.cleaned_data 
+        clean = form.cleaned_data
         for k, v in clean.items():
             setattr(self.object, k, v)
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
+class SetTagType(StaffuserRequiredMixin, View):
+    """
+    Set the tag type
+    """
+    def get(self, request):
+        tagid = request.GET.get('tagid', None)
+        tagtype = request.GET.get('tagtype', '')
+        data = {}
+        try:
+            tag = Tags.objects.get(pk=int(tagid))
+            try:
+                setattr(tag, "%s_tag" % (tagtype), True)
+                tag.save()
+                data['result'] = 'ok'
+            except AttributeError:
+                data['result'] = 'error'
+                data['message'] = 'Not a valid type'
+        except (ValueError, Tags.DoesNotExist):
+            data['result'] = 'error'
+            data['message'] = 'Invalid Tag ID'
+        return HttpResponse(simplejson.dumps(data), mimetype="application/json")
 
-class IndexView(TemplateView):
+    def post(self, request):
+        raise Http404
+
+
+class RemoveTagType(LoginRequiredMixin, StaffuserRequiredMixin, View):
+    """
+    Set the tag type
+    """
+    def get(self, request):
+        tagid = request.GET.get('tagid', None)
+        tagtype = request.GET.get('tagtype', '')
+        data = {}
+        try:
+            tag = Tags.objects.get(pk=int(tagid))
+            try:
+                setattr(tag, "%s_tag" % (tagtype), False)
+                tag.save()
+                data['result'] = 'ok'
+            except AttributeError:
+                data['result'] = 'error'
+                data['message'] = 'Not a valid type'
+        except (ValueError, Tags.DoesNotExist):
+            data['result'] = 'error'
+            data['message'] = 'Invalid Tag ID'
+        return HttpResponse(simplejson.dumps(data), mimetype="application/json")
+
+    def post(self, request):
+        raise Http404
+
+
+
+class IndexView(StaffuserRequiredMixin, TemplateView):
     """ About Page View """
     template_name = "xxxgalleries/index.html"
 
 
-class GalleryView(ListView):
+class GalleryView(StaffuserRequiredMixin, ListView):
     """ Gallery List Page View """
     queryset = Gallery.objects.all().order_by('-id')
     model = Gallery
@@ -42,13 +97,13 @@ class GalleryView(ListView):
         return context
 
 
-class CreateGallery(CreateView):
+class CreateGallery(StaffuserRequiredMixin, CreateView):
     """ Create Gallery page view """
     form_class = GalleryForm
     model = Gallery
 
 
-class UpdateGallery(UpdateInstanceView):
+class UpdateGallery(StaffuserRequiredMixin, UpdateInstanceView):
     """ Update view """
     model = Gallery
     form_class = GalleryForm
@@ -58,7 +113,7 @@ class UpdateGallery(UpdateInstanceView):
         return obj
 
     
-class GalleryDetailView(DetailView):
+class GalleryDetailView(StaffuserRequiredMixin, DetailView):
     """ Gallery Detail Page View """
     queryset = Gallery.objects.all()
     def get_context_data(self, **kwargs):
@@ -87,17 +142,17 @@ class GalleryDetailView(DetailView):
 
 
 
-class ProviderView(ListView):
+class ProviderView(StaffuserRequiredMixin, ListView):
     """ Providers List Page View """
     model = Providers
 
 
-class CreateProvider(CreateView):
+class CreateProvider(StaffuserRequiredMixin, CreateView):
     """ Create Gallery page view """
     model = Providers
 
 
-class UpdateProvider(UpdateView):
+class UpdateProvider(StaffuserRequiredMixin, UpdateView):
     """ Update view """
     model = Providers
     form_class = ProvidersForm
@@ -116,7 +171,7 @@ class UpdateProvider(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ProviderDetailView(DetailView):
+class ProviderDetailView(StaffuserRequiredMixin, DetailView):
     """ Gallery Detail Page View """
     queryset = Providers.objects.all()
     def get_object(self, **kwargs):
@@ -131,13 +186,18 @@ class ProviderDetailView(DetailView):
 
 
 
-class TagsView(ListView):
+class TagsView(StaffuserRequiredMixin, ListView):
     """ Tags List Page View """
     queryset = Tags.objects.all().order_by('name')
     model = Tags
+    def get_queryset(self, **kwargs):
+        filters = {}
+        if self.request.GET.get('tagtype', None):
+            filters = {'%s_tag'%(self.request.GET.get('tagtype','')): True}
+        return Tags.objects.filter(**filters).order_by('name')
 
 
-class TagsDetailView(DetailView):
+class TagsDetailView(StaffuserRequiredMixin, DetailView):
     """ Tags Detail Page View """
     queryset = Tags.objects.all()
     def get_context_data(self, **kwargs):
@@ -151,7 +211,7 @@ class TagsDetailView(DetailView):
         return object
 
 
-class AddTagToGallery(View):
+class AddTagToGallery(StaffuserRequiredMixin, View):
     """ Add a tag to a gallery. """
     def get(self, request):
         """Sends back the form to the user and renders the template."""
@@ -175,7 +235,7 @@ class AddTagToGallery(View):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-class RemoveTagFromGallery(View):
+class RemoveTagFromGallery(StaffuserRequiredMixin, View):
     """Add a tag to a gallery """
     def get(self, request):
         """Sends back the form to the user and renders the template."""
@@ -200,17 +260,17 @@ class RemoveTagFromGallery(View):
 
 
 
-class BannersView(ListView):
+class BannersView(StaffuserRequiredMixin, ListView):
     """ Providers List Page View """
     model = Banners
 
 
-class CreateBanners(CreateView):
+class CreateBanners(StaffuserRequiredMixin, CreateView):
     """ Create Gallery page view """
     model = Banners
 
 
-class UpdateBanners(UpdateView):
+class UpdateBanners(StaffuserRequiredMixin, UpdateView):
     """ Update view """
     model = Banners
     form_class = BannersForm
@@ -229,7 +289,7 @@ class UpdateBanners(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class BannersDetailView(DetailView):
+class BannersDetailView(StaffuserRequiredMixin, DetailView):
     """ Gallery Detail Page View """
     queryset = Banners.objects.all()
     def get_object(self, **kwargs):

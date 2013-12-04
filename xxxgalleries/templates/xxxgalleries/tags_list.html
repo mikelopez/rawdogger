@@ -1,10 +1,53 @@
-tags_{% extends "xxxgalleries/base.html" %}
+{% extends "xxxgalleries/base.html" %}
 
 {% block title %}Tags{% endblock %}
 {% block heading %}Tags View{% endblock %}
 
-{% block table_list %}
+{% block js_overrides %}
+<script type="text/javascript">
+    function set_tag_type(type, id) {
+        $.getJSON("{% url 'set_tag_type' %}?tagtype="+type+"&tagid="+id, function(data) {
+            console.log(data);
+        });
+        console.log('Setting tag as ' + type + ' tag');
+        // if it is set
+        $('#no_tag_'+type+'_check_'+id).css('display', 'none');
+        $('#no_tag_'+type+'_'+id).css('display', 'none');
 
+        $('#ok_tag_'+type+'_check_'+id).css('display', 'block');
+        $('#ok_tag_'+type+'_'+id).css('display', 'block');
+        $('#ok_tag_'+type+'_check_'+id).prop('checked', true);
+        return false;
+
+    }
+    function remove_tag_type(type, id) {
+        $.getJSON("{% url 'remove_tag_type' %}?tagtype="+type+"&tagid="+id, function(data) {
+            console.log(data);
+        });
+        console.log('Removing tag as ' + type + ' tag');
+
+        // if it is set
+        $('#ok_tag_'+type+'_check_'+id).css('display', 'none');
+        $('#ok_tag_'+type+'_'+id).css('display', 'none');
+
+        $('#no_tag_'+type+'_check_'+id).css('display', 'block');
+        $('#no_tag_'+type+'_'+id).css('display', 'block');
+        $('#no_tag_'+type+'_check_'+id).prop('checked', false);
+        return false;
+    }
+    
+</script>
+{% endblock %}
+
+
+{% block table_list %}
+    
+    <a class="btn btn-primary" href="{% url 'tags_view' %}?tagtype=main">Main Tags</a>&nbsp;&nbsp;
+    <a class="btn btn-primary" href="{% url 'tags_view' %}?tagtype=model">Model Tags</a>&nbsp;&nbsp;
+    <a class="btn btn-primary" href="{% url 'tags_view' %}?tagtype=site">Site Tags</a>&nbsp;&nbsp;
+    <a class="btn btn-primary" href="{% url 'tags_view' %}?tagtype=">All Tags</a>&nbsp;&nbsp;
+    <div class="linebreak10"></div><hr />
+    <div class="linebreak10"></div>
   <table class="table table-bordered table-striped" style="width:800px;font-size:14px;">
       <tr><td>ID</td><td>Name</td><td>Pic</td><td>Video</td>
           <td>Main tag</td><td>Model tag</td><td>Site tag</td><td>Update</td>
@@ -17,21 +60,106 @@ tags_{% extends "xxxgalleries/base.html" %}
       <td>{{ i.cache_vidgalleries_count }} </td>
       <td>
           {% if i.main_tag %}
-            <input type="checkbox" name="tagit" id="tag_main_check_{{i.id}}" 
-                class="tag-check pull-left" checked />&nbsp;&nbsp;
-            <span id="tag_main_{{i.id}}" class="taglabel label label-success pull-left">Main</span>
+            
+            <input type="checkbox" name="tagit" id="ok_tag_main_check_{{i.id}}" 
+            class="tag-check pull-left" onchange="remove_tag_type('main', {{i.id}});"/>
+                &nbsp;&nbsp;
+            <span id="ok_tag_main_{{i.id}}" class="taglabel label label-success pull-left">
+                Main
+            </span> 
+
+            <input style="display:none;" type="checkbox" name="tagit" id="no_tag_main_check_{{i.id}}" 
+            class="tag-check pull-left" onchange="set_tag_type('main', {{i.id}});"/>
+            <span style="display:none;" id="no_tag_main_{{i.id}}" class="taglabel label label-danger pull-left">
+                Main
+            </span> 
+
+
           {% else %}
-            <input type="checkbox" name="tagit" id="tag_main_check_{{i.id}}" 
-                class="pull-left tag-check" />&nbsp;&nbsp;
-            <span id="tag_main_{{i.id}}" class="taglabel label label-danger pull-left">Main</span>
+          
+            <input type="checkbox" name="tagit" id="no_tag_main_check_{{i.id}}" 
+            class="pull-left tag-check" onchange="set_tag_type('main', {{i.id}});" />&nbsp;&nbsp;
+            <span id="no_tag_main_{{i.id}}" class="taglabel label label-danger pull-left">
+                Main
+            </span>
+
+            <input style="display:none;" type="checkbox" name="tagit" id="ok_tag_main_check_{{i.id}}" 
+            class="pull-left tag-check" onchange="remove_tag_type('main', {{i.id}})" />&nbsp;&nbsp;
+            <span style="display:none;" id="ok_tag_main_{{i.id}}" class="taglabel label label-success pull-left">
+                Main
+            </span> 
 
           {% endif %}
       </td>
       <td>
-          <span id="tag_model_{{i.id}}" class="label label-success">Model</span>
+
+          {% if i.model_tag %}
+            
+            <input type="checkbox" name="tagit" id="ok_tag_model_check_{{i.id}}" 
+            class="tag-check pull-left" onchange="remove_tag_type('model', {{i.id}});"/>
+                &nbsp;&nbsp;
+            <span id="ok_tag_model_{{i.id}}" class="taglabel label label-success pull-left">
+                Main
+            </span> 
+
+            <input style="display:none;" type="checkbox" name="tagit" id="no_tag_model_check_{{i.id}}" 
+            class="tag-check pull-left" onchange="set_tag_type('model', {{i.id}});"/>
+            <span style="display:none;" id="no_tag_model_{{i.id}}" class="taglabel label label-danger pull-left">
+                Main
+            </span> 
+
+
+          {% else %}
+          
+            <input type="checkbox" name="tagit" id="no_tag_model_check_{{i.id}}" 
+            class="pull-left tag-check" onchange="set_tag_type('model', {{i.id}});" />&nbsp;&nbsp;
+            <span id="no_tag_model_{{i.id}}" class="taglabel label label-danger pull-left">
+                Main
+            </span>
+
+            <input style="display:none;" type="checkbox" name="tagit" id="ok_tag_model_check_{{i.id}}" 
+            class="pull-left tag-check" onchange="remove_tag_type('model', {{i.id}})" />&nbsp;&nbsp;
+            <span style="display:none;" id="ok_tag_model_{{i.id}}" class="taglabel label label-success pull-left">
+                Main
+            </span> 
+
+        {% endif %}
+
       </td>
       <td>
-          <span id="no_tag_site_{{i.id}}" class="label label-danger">Site</span>
+
+          {% if i.site_tag %}
+            
+            <input type="checkbox" name="tagit" id="ok_tag_site_check_{{i.id}}" 
+            class="tag-check pull-left" onchange="remove_tag_type('site', {{i.id}});"/>
+                &nbsp;&nbsp;
+            <span id="ok_tag_site_{{i.id}}" class="taglabel label label-success pull-left">
+                Main
+            </span> 
+
+            <input style="display:none;" type="checkbox" name="tagit" id="no_tag_site_check_{{i.id}}" 
+            class="tag-check pull-left" onchange="set_tag_type('site', {{i.id}});"/>
+            <span style="display:none;" id="no_tag_site_{{i.id}}" class="taglabel label label-danger pull-left">
+                Main
+            </span> 
+
+
+          {% else %}
+          
+            <input type="checkbox" name="tagit" id="no_tag_site_check_{{i.id}}" 
+            class="pull-left tag-check" onchange="set_tag_type('site', {{i.id}});" />&nbsp;&nbsp;
+            <span id="no_tag_site_{{i.id}}" class="taglabel label label-danger pull-left">
+                Main
+            </span>
+
+            <input style="display:none;" type="checkbox" name="tagit" id="ok_tag_site_check_{{i.id}}" 
+            class="pull-left tag-check" onchange="remove_tag_type('site', {{i.id}})" />&nbsp;&nbsp;
+            <span style="display:none;" id="ok_tag_site_{{i.id}}" class="taglabel label label-success pull-left">
+                Main
+            </span> 
+
+        {% endif %}
+
       </td>
       <td>
           <input type="button" class="btn btn-small btn-default" value="Update counts" />

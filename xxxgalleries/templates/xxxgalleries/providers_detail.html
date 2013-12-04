@@ -14,7 +14,7 @@
     <hr />
     
     <div class="pull-left" style="width:300px;" >
-        Name:<b> {{object.name}}</b>
+        Name:<b> {{object.name}}</b><br />
         Login: <a href="{{object.login_url}}">{{object.login_url}}</a><br />
         Username: {{object.username}}<br />
         Password: {{object.password}}<br />
@@ -26,9 +26,9 @@
                 onclick="window.location='{% url 'providers_view' %}';"/>
     </div>
     <div class="pull-right" style="width:400px;">
-        Galleries: {{banners_count}}
+        Galleries: {{galleries_count}}
         <br />
-        Banners: {{galleries_count}}
+        Banners: {{banners_count}}
     </div>
 {% endblock %}
 

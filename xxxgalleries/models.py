@@ -1,9 +1,11 @@
 import os
 import urllib
 import Image
+from random import randint
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
 LOCAL_TYPE = 'local'
@@ -194,24 +196,14 @@ class Gallery(models.Model):
 
             # if no thumb.jpg file, download the thumb_url
             if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
-                if self.content == 'pic':
-                    if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
-                        urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
-                        # retry without the .mini...
-                        if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())) == 0:
-                            try:
-                                urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
-                            except:
-                                pass
-
-                if self.content == 'video':
-                    if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
-                        urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
-                        if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())) == 0:
-                            try:
-                                urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
-                            except:
-                                pass
+                if not os.path.exists('%s/thumbs/thumb.jpg' % (self.get_media_directory())):
+                    urllib.urlretrieve(getattr(self, 'thumb_url'), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                    # retry without the .mini...
+                    if os.path.getsize('%s/thumbs/thumb.jpg' % (self.get_media_directory())) == 0:
+                        try:
+                            urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s/thumbs/thumb.jpg' % (self.get_media_directory()))
+                        except:
+                            pass
 
             # try to resize
             if self.content == 'pic':
@@ -296,6 +288,30 @@ class Tags(models.Model):
         self.cache_vidgalleries_count = c
         self.save()
         return c
+
+    def get_vid_thumb(self):
+        """Return the video thumbnail"""
+        return None
+
+    @property
+    def get_pic_thumb(self, try_video=False):
+        """Gets a pic thumbnail from a gallery.
+        set try_video=True to try to find a video gallery thumbnail 
+        when there is no picture galleries."""
+        try:
+            counts = self.gallery_set.filter(content='pic').count()
+            rands = 0
+            if counts > 0:
+                try:
+                    rands = randint(0, (counts-1))
+                except:
+                    pass
+            thmb = self.gallery_set.filter(content='pic')[rands]
+            return thmb.thumbnail
+        except (IndexError, AttributeError):
+            if try_video:
+                return self.get_vid_thumb()
+            return None
 
     def __str__(self):
         return str(self.name)

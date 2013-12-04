@@ -5,7 +5,8 @@ from xxxgalleries.views import IndexView, \
         GalleryView, GalleryDetailView, CreateGallery, UpdateGallery, \
         CreateProvider, UpdateProvider, ProviderView, ProviderDetailView, \
         TagsView, TagsDetailView, AddTagToGallery, RemoveTagFromGallery, \
-        CreateBanners, UpdateBanners, BannersView, BannersDetailView
+        CreateBanners, UpdateBanners, BannersView, BannersDetailView, \
+        SetTagType, RemoveTagType
         
 
 urlpatterns = patterns('',
@@ -25,6 +26,8 @@ urlpatterns = patterns('',
     url(r'^banners/(?P<pk>\d+)/$', BannersDetailView.as_view(), name="banners_detail"),
     url(r'^banners/', BannersView.as_view(), name="banners_view"),
     
+    url(r'^remtagtype/', RemoveTagType.as_view(), name="remove_tag_type"),
+    url(r'^tagtype/', SetTagType.as_view(), name="set_tag_type"),
     url(r'^tag/(?P<pk>\d+)/$', TagsDetailView.as_view(), name="tags_detail"),
     url(r'^tags/', TagsView.as_view(), name="tags_view"),
     url(r'^addtag/', AddTagToGallery.as_view(), name="addtag"),
