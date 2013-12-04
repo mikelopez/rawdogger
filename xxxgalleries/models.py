@@ -327,7 +327,7 @@ class Tags(models.Model):
         """Returns the tag face gallery"""
         try:
             return PicTagFaces.objects.get(tag=self).gallery.thumbnail
-        except (TagFaces.DoesNotExist, AttributeError):
+        except (PicTagFaces.DoesNotExist, AttributeError):
             return None
 
     def __str__(self):
