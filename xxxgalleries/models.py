@@ -2,12 +2,15 @@ import os
 import urllib
 import Image
 from random import randint
+from datetime import datetime
+from termprint import *
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+DEBUG = getattr(settings, "DEBUG", "")
 GALLERY_AUTO_CREATE_MEDIA_FOLDER = getattr(settings, "GALLERY_AUTO_CREATE_MEDIA_FOLDER", False)
 LOCAL_TYPE = 'local'
 LOCAL_MIXED = 'local-mix'
@@ -68,6 +71,10 @@ class Gallery(models.Model):
     tags = models.ManyToManyField('Tags', blank=True, null=True)
     banners = models.ManyToManyField('Banners', blank=True, null=True)
     filter_name = models.CharField(max_length=50, blank=True, null=True)
+    def __str__(self):
+        return str(self.name)
+    def __unicode__(self):
+        return unicode(self.name)
 
     def get_thumb(self):
         thumb = "thumb.jpg"
@@ -81,17 +88,26 @@ class Gallery(models.Model):
         If not found, check the media_folder for any 'thumb.jpg' files
         If not, finally, check self.thumb_url for a remote thumb URL to use.
         """
+        if DEBUG:
+            termprint("SUCCESS", "%s thumbnail()" % (datetime.now()))
+
         for i in self.galleryitem_set.select_related():
             if 'thumb' in getattr(i, 'filename'):
                 return "/media/galleries/%s/%s" % (self.media_folder,
                                                   getattr(i, 'filename'))
 
+        if DEBUG:
+            termprint("SUCCESS", "%s Checking media_folder get_media_folder()" % (datetime.now()))
         if self.get_media_folder():
             if getattr(self, 'content', 'pic') == 'pic':
                 if os.path.exists('%s/thumbs/v/thumb.jpg' % (self.get_media_directory())):
+                    if DEBUG:
+                        termprint("SUCCESS", "%s --- Return V thumb" % (datetime.now()))
                     return "/media/galleries/%s/thumbs/v/thumb.jpg" % (self.media_folder)
             if getattr(self, 'content', 'video') == 'video':
                 if os.path.exists('%s/thumbs/h/thumb.jpg' % (self.get_media_directory())):
+                    if DEBUG:
+                        termprint("SUCCESS", "%s --- Return V thumb" % (datetime.now()))
                     return "/media/galleries/%s/thumbs/h/thumb.jpg" % (self.media_folder)
 
         if self.thumb_url:
@@ -145,7 +161,7 @@ class Gallery(models.Model):
     def admin_missing_images(self):
         return self.missing_images
     admin_missing_images.boolean = True
-    
+
     def admin_media_folder_found(self):
         return self.get_media_folder()
     admin_media_folder_found.boolean = True
@@ -336,8 +352,14 @@ class Tags(models.Model):
 
     def get_pic_tag_thumb(self):
         """Returns the tag face gallery"""
+        return "/media/galleries/%s/thumbs/v/thumb.jpg" % \
+                PicTagFaces.objects.get(tag=self).gallery.media_folder
+        if DEBUG:
+            termprint("SUCCESS", "%s get_pic_tag_thumb()" % (datetime.now()))
         try:
-            return PicTagFaces.objects.get(tag=self).gallery.thumbnail
+            obj = PicTagFaces.objects.get(tag=self).gallery.thumbnail
+            if DEBUG:
+                termprint("SUCCES", "%s --- return obj" % (datetime.now()))
         except (PicTagFaces.DoesNotExist, AttributeError):
             return None
 
@@ -376,6 +398,10 @@ class PicTagFaces(models.Model):
     """
     gallery = models.ForeignKey('Gallery')
     tag = models.ForeignKey('Tags')
+    gallery_thumb = models.TextField(blank=True, null=True)
+    def save(self):
+        self.gallery_thumb = self.gallery.thumbnail
+        super(PicTagFaces, self).save()
 
 class VidTagFaces(models.Model):
     """
@@ -383,3 +409,7 @@ class VidTagFaces(models.Model):
     """
     gallery = models.ForeignKey('Gallery')
     tag = models.ForeignKey('Tags')
+    gallery_thumb = models.TextField(blank=True, null=True)
+    def save(self):
+        self.gallery_thumb = self.gallery.thumbnail
+        super(PicTagFaces, self).save()
