@@ -142,6 +142,10 @@ class Gallery(models.Model):
                 result = True
         return result
 
+    @property 
+    def media_folder_exists(self):
+        return self.get_media_folder()
+
     def get_absolute_url(self):
         return reverse('gallery_detail', kwargs={'pk': self.pk})
 
