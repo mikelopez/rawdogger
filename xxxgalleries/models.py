@@ -88,26 +88,17 @@ class Gallery(models.Model):
         If not found, check the media_folder for any 'thumb.jpg' files
         If not, finally, check self.thumb_url for a remote thumb URL to use.
         """
-        if DEBUG:
-            termprint("SUCCESS", "%s thumbnail()" % (datetime.now()))
-
         for i in self.galleryitem_set.select_related():
             if 'thumb' in getattr(i, 'filename'):
                 return "/media/galleries/%s/%s" % (self.media_folder,
                                                   getattr(i, 'filename'))
 
-        if DEBUG:
-            termprint("SUCCESS", "%s Checking media_folder get_media_folder()" % (datetime.now()))
         if self.get_media_folder():
             if getattr(self, 'content', 'pic') == 'pic':
                 if os.path.exists('%s/thumbs/v/thumb.jpg' % (self.get_media_directory())):
-                    if DEBUG:
-                        termprint("SUCCESS", "%s --- Return V thumb" % (datetime.now()))
                     return "/media/galleries/%s/thumbs/v/thumb.jpg" % (self.media_folder)
             if getattr(self, 'content', 'video') == 'video':
                 if os.path.exists('%s/thumbs/h/thumb.jpg' % (self.get_media_directory())):
-                    if DEBUG:
-                        termprint("SUCCESS", "%s --- Return V thumb" % (datetime.now()))
                     return "/media/galleries/%s/thumbs/h/thumb.jpg" % (self.media_folder)
 
         if self.thumb_url:
@@ -352,8 +343,6 @@ class Tags(models.Model):
 
     def get_pic_tag_thumb(self):
         """Returns the tag face gallery"""
-        if DEBUG:
-            termprint("SUCCESS", "%s get_pic_tag_thumb()" % (datetime.now()))
         try:
             return PicTagFaces.objects.get(tag=self).gallery_thumb
         except (PicTagFaces.DoesNotExist, AttributeError):
