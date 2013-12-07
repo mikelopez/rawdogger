@@ -23,7 +23,7 @@
       <td>Affiliate ID</td><td>LINK ID</td>
     </tr>
     {% for i in object_list %}
-    <tr {% if i.count_galleries < 1 %}class="danger"{% endif %}>
+    <tr {% if i.count_galleries < 1 %}class="danger"{% else %}class="success"{% endif %}>
       <td><a href="{% url 'provider_detail' pk=i.id %}">{{ i.name }}</a></td>
       <td><a href="{{ i.login_url }}">Login</a></td>
       <td>{{ i.count_galleries }}</td>
