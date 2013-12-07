@@ -3,8 +3,9 @@ from django.views.generic import TemplateView, ListView, View,\
                                  DetailView, CreateView, UpdateView
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from models import Gallery, Providers, Tags, Banners
-from forms import GalleryForm, ProvidersForm, BannersForm
+from models import Gallery, Providers, Tags, Banners, ProviderAccounts, \
+                   ProviderWebsites, ProviderWebsiteLinks
+from forms import GalleryForm, ProvidersForm, BannersForm, ProviderAccountsForm
 from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 from django.conf import settings
 
@@ -145,7 +146,6 @@ class GalleryDetailView(StaffuserRequiredMixin, DetailView):
 class ProviderView(StaffuserRequiredMixin, ListView):
     """ Providers List Page View """
     model = Providers
-
 
 class CreateProvider(StaffuserRequiredMixin, CreateView):
     """ Create Gallery page view """
@@ -296,3 +296,45 @@ class BannersDetailView(StaffuserRequiredMixin, DetailView):
         """Get the object"""
         object = super(BannersDetailView, self).get_object(**kwargs)
         return object
+
+
+class ProviderAccountsView(StaffuserRequiredMixin, ListView):
+    """ Providers List Page View """
+    model = ProviderAccounts
+
+class CreateProviderAccounts(StaffuserRequiredMixin, CreateView):
+    """ Create Gallery page view """
+    model = ProviderAccounts
+
+
+class UpdateProviderAccounts(StaffuserRequiredMixin, UpdateView):
+    """ Update view """
+    model = ProviderAccounts
+    form_class = ProviderAccountsForm
+    template_name = 'xxxgalleries/provider_update.html'
+
+    def get_object(self, queryset=None):
+        obj = ProviderAccounts.objects.get(id=self.kwargs['pk'])
+        return obj
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        clean = form.cleaned_data 
+        for k, v in clean.items():
+            setattr(self.object, k, v)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class ProviderAccountsDetailView(StaffuserRequiredMixin, DetailView):
+    """ Gallery Detail Page View """
+    queryset = ProviderAccounts.objects.all()
+    def get_object(self, **kwargs):
+        """Get the object"""
+        object = super(ProviderAccountsDetailView, self).get_object(**kwargs)
+        return object
+    def get_context_data(self, **kwargs):
+        context = super(ProviderAccountsDetailView, self).get_context_data(**kwargs)
+        context['galleries_count'] = Gallery.objects.filter(provider=context.get('object')).count()
+        context['banners_count'] = Banners.objects.filter(provider=context.get('object')).count()
+        return context

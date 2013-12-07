@@ -18,6 +18,8 @@ HOSTED_TYPE = 'hosted'
 
 from resize import *
 
+LINK_ID = "#AFF_ID#"
+
 class GalleryItem(models.Model):
     """
     Thumb can be either local url or remote URL
@@ -252,6 +254,7 @@ class Gallery(models.Model):
         super(Gallery, self).save()
 
 
+
 class Providers(models.Model):
     """ Lets keep track of the providers that
     we will be dealing with.
@@ -264,21 +267,53 @@ class Providers(models.Model):
      - notes
     """
     def __str__(self):
-        return str("%s / %s" % (self.name, self.website))
+        return str(self.name)
     def __unicode__(self):
-        return unicode("%s / %s" % (self.name, self.website))
+        return unicode(self.name)
 
     def get_absolute_url(self):
         return reverse('provider_detail', kwargs={'pk': self.pk})
 
+    @property
+    def count_galleries(self):
+        return Gallery.objects.filter(provider=self).count()
+    @property
+    def count_banners(self):
+        return Banners.objects.filter(provider=self).count()
+
     name = models.CharField(max_length=30)
-    username = models.CharField(max_length=50, blank=True, null=True)
-    password = models.CharField(max_length=20, blank=True, null=True)
     website = models.CharField(blank=True, null=True, max_length=150)
     login_url = models.CharField(max_length=200, blank=True, null=True)
-    ccbill = models.CharField(max_length=20, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     logo = models.TextField(blank=True, null=True)
+
+class ProviderAccounts(models.Model):
+    """Manage the accounts registered for a provider since they 
+    mostly require one account per website.
+    """
+    provider = models.ForeignKey('Providers')
+    email_registered = models.CharField(max_length=200, blank=True, null=True)
+    username = models.CharField(max_length=50, blank=True, null=True)
+    password = models.CharField(max_length=20, blank=True, null=True)
+    website_registered = models.CharField(max_length=200, blank=True, null=True)
+    ccbill = models.CharField(max_length=20, blank=True, null=True)
+    affiliate_id = models.CharField(max_length=20, blank=True, null=True)
+    link_id = models.CharField(max_length=30, blank=True, null=True)
+    def get_absolute_url(self):
+        return reverse('provider_accounts_detail', kwargs={'pk': self.pk})
+
+
+class ProviderWebsites(models.Model):
+    """Manage the websites that a provider can promote."""
+    provider = models.ForeignKey('Providers')
+    domain = models.CharField(max_length=200)
+
+class ProviderWebsiteLinks(models.Model):
+    """Manage the provider website links."""
+    provider = models.ForeignKey('Providers')
+    website = models.ForeignKey('ProviderWebsites')
+    name = models.CharField(max_length=30)
+    url = models.CharField(max_length=200)
 
 class ProgramTypes(models.Model):
     """ Keep track of the program types for 
@@ -361,11 +396,12 @@ class Banners(models.Model):
              ('square', 'square'))
     name = models.CharField(max_length=50)
     ratio = models.CharField(max_length=20, choices=TYPES)
-    jumplink = models.TextField()
+    jumplink = models.TextField(blank=True, null=True)
     picture = models.TextField()
     width = models.IntegerField(blank=True, null=True, default=0)
     height = models.IntegerField(blank=True, null=True, default=0)
     provider = models.ForeignKey('Providers')
+    #reference_link = models.ForeignKey('ProviderWebsiteLinks', blank=True, null=True)
     def __str__(self):
         return str(self.name)
     def __unicode__(self):

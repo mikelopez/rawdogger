@@ -3,20 +3,52 @@
 {% block title %}Providers{% endblock %}
 {% block heading %}Providers View{% endblock %}
 
-{% block table_list %}
+{% block additional_css_overrides %}
+  <style type="text/css">
+    .container { width:940px; }
+    .danger > td, .table > tfoot > .danger > td, .table > thead > .danger > th, .table > tbody > .danger > th, .table > tfoot > .danger > th {
+    background-color: #ee5f5b;
+    }
+  </style>
+{% endblock %}
 
-  <table class="table table-bordered table-striped" style="width:100%;font-size:12px;">
-    <tr><td>Name</td><td>Username</td><td>Password</td>
-      <td>Website</td><td>Login URL</td><td>CCBill</td></tr>
-    {% for i in object_list %}
-    <tr>
-      <td><a href="{% url 'provider_detail' pk=i.id %}">{{ i.name }}</a></td>
-      <td>{{ i.username }} </td>
-      <td>{{ i.password }}</td>
-      <td>{{ i.website }}</td>
-      <td>{{ i.login_url }}</td>
-      <td>{{ i.ccbill }}</td>
+{% block table_list %}
+  <input type="button" class="btn btn-info pull-left" value="Add Account" 
+                onclick="window.location='{% url 'provider_accounts_add' %}';"/>
+  <div class="linebreak10"></div>
+  <div class="linebreak10"></div>
+  <table class="table table-bordered" style="width:930px;font-size:12px;">
+    <tr><td>Name</td><td>Login</td><td>Galleries</td><td>Banners</td><td>Username</td><td>Password</td>
+      <td>Website Registered</td><td>CCBill</td>
+      <td>Affiliate ID</td><td>LINK ID</td>
     </tr>
+    {% for i in object_list %}
+    <tr {% if i.count_galleries < 1 %}class="danger"{% endif %}>
+      <td><a href="{% url 'provider_detail' pk=i.id %}">{{ i.name }}</a></td>
+      <td><a href="{{ i.login_url }}">Login</a></td>
+      <td>{{ i.count_galleries }}</td>
+      <td>{{ i.count_banners }}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+      {% for pa in i.provideraccounts_set.select_related %}
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>{{ pa.username }} </td>
+          <td>{{ pa.password }}</td>
+          <td>{{ pa.ccbill }}</td>
+          <td>{{ pa.website_registered }}</td>
+          <td>{{pa.affiliate_id}}</td>
+          <td>{{pa.link_id}}</td>
+        </tr>
+      {% endfor %}
     {% endfor %}
    </table>
 
@@ -25,5 +57,6 @@
 
  {% block action_button %}
     <input type="button" class="btn btn-info pull-right" value="Add Provider" 
-                onclick="window.location='{% url 'providers_add' %}';"/>
+                onclick="window.location='{% url 'providers_add' %}';"/><br /><br />
+
 {% endblock %}

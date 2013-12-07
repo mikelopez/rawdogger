@@ -2,6 +2,14 @@
 
 {% block title %}Provider {{object.name}} {% endblock %}
 {% block heading %}Provider: {{object.name}}{% endblock %}
+{% block additional_css_overrides %}
+  <style type="text/css">
+    .container { width:940px; }
+    .danger > td, .table > tfoot > .danger > td, .table > thead > .danger > th, .table > tbody > .danger > th, .table > tfoot > .danger > th {
+    background-color: #ee5f5b;
+    }
+  </style>
+{% endblock %}
 
 
 {% block detail_view %}
@@ -16,24 +24,45 @@
     <div class="pull-left" style="width:300px;" >
         Name:<b> {{object.name}}</b><br />
         Login: <a href="{{object.login_url}}">{{object.login_url}}</a><br />
-        Username: {{object.username}}<br />
-        Password: {{object.password}}<br />
-        Website: {{object.website}}<br />
-        CCBill: {{object.ccbill}}<br />
+
         <div class="linebreak10"></div>
         <div class="linebreak10"></div>
-        <input type="button" class="btn btn-info pull-left" value="Back to Providers" 
-                onclick="window.location='{% url 'providers_view' %}';"/>
+         <input type="button" class="btn btn-warning pull-left" value="Edit" 
+            onclick="window.location='{% url 'providers_update' pk=object.id %}';"/>
     </div>
     <div class="pull-right" style="width:400px;">
         Galleries: {{galleries_count}}
         <br />
         Banners: {{banners_count}}
     </div>
+
+    <div class="linebreak10"></div>
+
+    <h2>Accounts with this provider</h2>
+    <table class="table table-bordered table-striped" style="width:930px;">
+    <tr class="success" style="font-weight:bold;">
+        <td>Username</td><td>Password</td>
+        <td>CCBill</td><td>Website Registered</td>
+        <td>Affiliate ID</td><td>Link ID</td>
+    </tr>
+    {% for pa in object.provideraccounts_set.select_related %}
+        <tr>
+          
+          <td>{{ pa.username }} </td>
+          <td>{{ pa.password }}</td>
+          <td>{{ pa.ccbill }}</td>
+          <td>{{ pa.website_registered }}</td>
+          <td>{{pa.affiliate_id}}</td>
+          <td>{{pa.link_id}}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
 {% endblock %}
 
 {% block action_button %}
-    <input type="button" class="btn btn-warning pull-right" value="Edit" 
-    onclick="window.location='{% url 'providers_update' pk=object.id %}';"/><br /><br />
+    <input type="button" class="btn btn-info pull-right" value="Back to Providers" 
+                onclick="window.location='{% url 'providers_view' %}';"/>
+    <br /><br />
 {% endblock %}
 

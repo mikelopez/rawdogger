@@ -6,7 +6,8 @@ from xxxgalleries.views import IndexView, \
         CreateProvider, UpdateProvider, ProviderView, ProviderDetailView, \
         TagsView, TagsDetailView, AddTagToGallery, RemoveTagFromGallery, \
         CreateBanners, UpdateBanners, BannersView, BannersDetailView, \
-        SetTagType, RemoveTagType
+        SetTagType, RemoveTagType, CreateProviderAccounts, UpdateProviderAccounts, \
+        ProviderAccountsView, ProviderAccountsDetailView
         
 
 urlpatterns = patterns('',
@@ -15,6 +16,11 @@ urlpatterns = patterns('',
     url(r'^gallery/update/(?P<pk>\d+)/$', UpdateGallery.as_view(), name="galleries_update"),
     url(r'^gallery/', GalleryView.as_view(), name="galleries_view"),
     url(r'^galleries/(?P<pk>\d+)/$', GalleryDetailView.as_view(), name="gallery_detail"),
+
+    url(r'^provider_accounts/add', CreateProviderAccounts.as_view(), name="provider_accounts_add"),
+    url(r'^provider_accounts/update/(?P<pk>\d+)/$', UpdateProviderAccounts.as_view(), name="provider_accounts_update"),
+    url(r'^provider_accounts/', ProviderAccountsView.as_view(), name="provider_accounts_view"),
+    url(r'^provider_accounts/(?P<pk>\d+)/$', ProviderAccountsDetailView.as_view(), name="provider_accounts_detail"),
 
     url(r'^provider/add', CreateProvider.as_view(), name="providers_add"),
     url(r'^provider/update/(?P<pk>\d+)/$', UpdateProvider.as_view(), name="providers_update"),

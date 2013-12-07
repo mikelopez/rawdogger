@@ -32,6 +32,8 @@
             .taglabel { margin-left:7px; }
         </style>
         {% endblock %}
+        {% block additional_css_overrides %}
+        {% endblock %}
        {% block js_overrides %}{% endblock %}
   </head>
     <body>
@@ -59,10 +61,12 @@
                         
                         <li class="divider"></li>
                         <li><a href="{% url 'galleries_view' %}">Galleries</a></li>
-                        <li><a href="{% url 'providers_view' %}">Providers</a></li>
                         <li><a href="{% url 'tags_view' %}?tagtype=main">Tags Report</a></li>
                         <li><a href="{% url 'banners_view' %}">Banners</a></li>
-                        
+                        <li class="divider"></li>
+                        <li><a href="{% url 'providers_view' %}">Providers</a></li>
+                        <li><a href="{% url 'provider_accounts_view' %}">Provider Accounts</a></li>
+
                       </ul>
                     </li>
                   </ul>
