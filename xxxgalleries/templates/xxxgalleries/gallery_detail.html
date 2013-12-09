@@ -4,13 +4,21 @@
 {% block heading %}Gallery: {{object.name}}{% endblock %}
 
 {% block detail_view %}
-    <div class="pull-left" style="width:550px;">
+    <div class="pull-left" style="width:650px;font-size:12px;">
         <table class="table table-bordered table-striped">
             <tr>
                 <td>Type</td><td>{{object.content}}</td>
             </tr>
             <tr>
                 <td>Jump Link</td><td>{{object.hosted_jump_link}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <a href="{{object.hosted_jump_link}}" target="_blank" class="btn btn-danger">
+                        View Jumplink
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>Media Folder</td><td>{{object.media_folder}}</td>

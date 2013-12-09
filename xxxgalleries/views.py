@@ -90,10 +90,13 @@ class GalleryView(StaffuserRequiredMixin, ListView):
     model = Gallery
     paginate_by = 16
     def get_queryset(self, **kwargs):
+        if self.request.GET.get('content', 'pic') == "pic":
+            self.paginate_by = 40
         return Gallery.objects.filter(content=self.request.GET.get('content', 'pic')).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(GalleryView, self).get_context_data(**kwargs)
+        context['content'] = self.request.GET.get('content', 'pic')
         context['tags'] = Tags.objects.all().order_by('name')
         return context
 
@@ -127,8 +130,11 @@ class GalleryDetailView(StaffuserRequiredMixin, DetailView):
             for i in obj.galleryitem_set.select_related():
                 media.append({'filename': i.filename, 'obj': i})
         else:
-            for i in obj.show_media():
-                media.append({'filename': i, 'obj': None})
+            try:
+                for i in obj.show_media():
+                    media.append({'filename': i, 'obj': None})
+            except:
+                pass
         thumb = None
         for m in media:
             if 'thumb' in m.get('filename'):

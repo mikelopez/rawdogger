@@ -81,7 +81,7 @@ class Gallery(models.Model):
     fetch_thumbnails = models.NullBooleanField(**NULLBOOL_FALSE)
     create_media_folder = models.NullBooleanField(**NULLBOOL_FALSE)
     thumb_width = models.IntegerField(default=0, blank=True, null=True)
-    thumb_heright = models.IntegerField(default=0, blank=True, null=True)
+    thumb_height = models.IntegerField(default=0, blank=True, null=True)
     provider = models.ForeignKey('Providers')
     tags = models.ManyToManyField('Tags', blank=True, null=True)
     banners = models.ManyToManyField('Banners', blank=True, null=True)
