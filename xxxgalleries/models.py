@@ -79,7 +79,7 @@ class Gallery(models.Model):
                                 verbose_name="Video url")
     hosted_jump_link = models.TextField(blank=True, null=True)
     fetch_thumbnails = models.NullBooleanField(**NULLBOOL_FALSE)
-    create_media_folder = models.NullBooleanField(**NULLBOOL_FALSE)
+    create_media_directory = models.NullBooleanField(**NULLBOOL_FALSE)
     thumb_width = models.IntegerField(default=0, blank=True, null=True)
     thumb_height = models.IntegerField(default=0, blank=True, null=True)
     provider = models.ForeignKey('Providers')
@@ -270,7 +270,7 @@ class Gallery(models.Model):
             setattr(self, 'filter_name', self.get_filter_name())
 
         # auto create the media folder only if the settings say so
-        if getattr(self, "create_media_folder", False):
+        if getattr(self, "create_media_directory", False):
             # will never override.
             self.create_media_folder()
 
