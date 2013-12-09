@@ -197,6 +197,52 @@ class Gallery(models.Model):
         os.system('mkdir %s/thumbs/v' % (self.get_media_directory()))
         os.system('mkdir %s/thumbs/h' % (self.get_media_directory()))
 
+    def get_thumbnail(thumb_dir):
+        # if no thumb.jpg file, download the thumb_url
+        if not os.path.exists(thumb_dir):
+            if not os.path.exists(thumb_dir):
+                urllib.urlretrieve(getattr(self, 'thumb_url'), '%s' % (thumb_dir))
+                # retry without the .mini...
+                if os.path.getsize(thumb_dir) == 0:
+                    try:
+                        thurl = str(getattr(self, 'thumb_url')
+                        urllib.urlretrieve(thurl).replace('.mini',''), '%s' % (thumb_dir))
+                    except:
+                        pass
+
+    def resize_pic_gallery(self, force=False):
+        """Resizes the thumbnail for the gallery if not found.
+        force bool forces it to overwrite and create anyway
+        pass any parameters to override the default pic thumb.
+        """
+        # try to resize only if they dont exist
+        if self.content == 'pic':
+            if not os.path.exists(v_thumb_dir):
+                if os.path.getsize(thumb_dir):
+                    try:
+                        im = Image.open(thumb_dir)
+                        imnew = cropped_thumbnail(im, [100, 140])
+                        imnew.save(v_thumb_dir, 'JPEG', quality=100)
+                    except:
+                        pass
+
+    def resize_vid_gallery(self, force=False):
+        """Resizes the thumbnail for a vidfeo gallery if not found.
+        bool forces it to overwrite the thumbnail.
+        width and height keyword arguments will override the defaults.
+        """
+        if self.content == 'video':
+            if not os.path.exists(h_thumb_dir):
+                if os.path.getsize(thumb_dir):
+                    try:
+                        im = Image.open(thumb_dir)
+                        imnew = cropped_thumbnail(im, [320, 220])
+                        imnew.save(h_thumb_dir, 'JPEG', quality=100)
+                    except:
+                        pass
+
+
+
     def save(self):
         # set filtername if not self.filter_name
         if not getattr(self, 'filter_name', None):
@@ -211,47 +257,25 @@ class Gallery(models.Model):
             self.create_media_folder()
 
         # if thumbnail URL exists in field and thumb.jpg does not exist.
-        if getattr(self, 'thumb_url', None):
-            if getattr(self, "gallery_type", "") == "local":
-                mdir = self.get_media_directory()
-                thumb_dir = "%s/thumbs/thumb.jpg" % (mdir)
-                h_thumb_dir = "%s/thumbs/h/thumb.jpg" % (mdir)
-                v_thumb_dir = "%s/thumbs/v/thumb.jpg" % (mdir)
+        if getattr(self, "fetch_thumbnails", False):
+            if getattr(self, 'thumb_url', None):
+                if getattr(self, "gallery_type", "") == "local":
+                    mdir = self.get_media_directory()
 
-                if not os.path.exists('%s/thumbs' % (mdir)):
-                    self.create_thumb_dirs()
+                    thumb_dir = "%s/thumbs/thumb.jpg" % (mdir)
+                    h_thumb_dir = "%s/thumbs/h/thumb.jpg" % (mdir)
+                    v_thumb_dir = "%s/thumbs/v/thumb.jpg" % (mdir)
 
-                # if no thumb.jpg file, download the thumb_url
-                if not os.path.exists(thumb_dir):
-                    if not os.path.exists(thumb_dir):
-                        urllib.urlretrieve(getattr(self, 'thumb_url'), '%s' % (thumb_dir))
-                        # retry without the .mini...
-                        if os.path.getsize(thumb_dir) == 0:
-                            try:
-                                urllib.urlretrieve(str(getattr(self, 'thumb_url')).replace('.mini',''), '%s' % (thumb_dir))
-                            except:
-                                pass
+                    if not os.path.exists('%s/thumbs' % (mdir)):
+                        self.create_thumb_dirs()
 
-                # try to resize only if they dont exist
-                if self.content == 'pic':
-                    if not os.path.exists(v_thumb_dir):
-                        if os.path.getsize(thumb_dir):
-                            try:
-                                im = Image.open(thumb_dir)
-                                imnew = cropped_thumbnail(im, [250, 300])
-                                imnew.save(v_thumb_dir, 'JPEG', quality=100)
-                            except:
-                                pass
-                if self.content == 'video':
-                    if not os.path.exists(h_thumb_dir):
-                        if os.path.getsize(thumb_dir):
-                            try:
-                                im = Image.open(thumb_dir)
-                                imnew = cropped_thumbnail(im, [320, 220])
-                                imnew.save(h_thumb_dir, 'JPEG', quality=100)
-                            except:
-                                pass
-
+                    # get the thumbnail from the URL entered
+                    self.get_thumbnail(thumb_dir)
+                    # resize / save them depending on gallery content type
+                    self.resize_pic_gallery(h_thumb_dir)
+                    self.resize_vid_gallery(v_thumb_dir)
+                
+                
         super(Gallery, self).save()
 
 
