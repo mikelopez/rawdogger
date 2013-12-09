@@ -12,9 +12,13 @@ from django.conf import settings
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
 DEBUG = getattr(settings, "DEBUG", "")
 GALLERY_AUTO_CREATE_MEDIA_FOLDER = getattr(settings, "GALLERY_AUTO_CREATE_MEDIA_FOLDER", False)
+
 LOCAL_TYPE = 'local'
 LOCAL_MIXED = 'local-mix'
 HOSTED_TYPE = 'hosted'
+
+NULLBOOL_FALSE = {'blank': True, 'null': True, 'default': False}
+NULLBOOL_TRUE = {'blank': True, 'null': True, 'default': False}
 
 from resize import *
 
@@ -53,7 +57,7 @@ class Gallery(models.Model):
             ('pic', 'pic'),
             ('video', 'video'),
             ('both', 'both'))
-
+    
     name = models.CharField(max_length=100)
     content = models.CharField(max_length=10, choices=CONTENT, 
                                 help_text="Select the type of content",
@@ -69,6 +73,10 @@ class Gallery(models.Model):
     video_url = models.TextField(blank=True, null=True,
                                 verbose_name="Video url")
     hosted_jump_link = models.TextField(blank=True, null=True)
+    fetch_thumbnails = models.NullBooleanField(**NULLBOOL_FALSE)
+    create_media_folder = models.NullBooleanField(**NULLBOOL_FALSE)
+    thumb_width = models.IntegerField(default=0, blank=True, null=True)
+    thumb_heright = models.IntegerField(default=0, blank=True, null=True)
     provider = models.ForeignKey('Providers')
     tags = models.ManyToManyField('Tags', blank=True, null=True)
     banners = models.ManyToManyField('Banners', blank=True, null=True)
@@ -82,6 +90,14 @@ class Gallery(models.Model):
         thumb = "thumb.jpg"
         return '<img width="120" height="120" src="/media/galleries/%s/%s" />' % (self.media_folder, thumb)
     get_thumb.allow_tags = True
+
+    def admin_missing_images(self):
+        return self.missing_images
+    admin_missing_images.boolean = True
+
+    def admin_media_folder_found(self):
+        return self.get_media_folder()
+    admin_media_folder_found.boolean = True
 
     @property
     def thumbnail(self):
@@ -151,14 +167,6 @@ class Gallery(models.Model):
                 result = True
         return result
 
-    def admin_missing_images(self):
-        return self.missing_images
-    admin_missing_images.boolean = True
-
-    def admin_media_folder_found(self):
-        return self.get_media_folder()
-    admin_media_folder_found.boolean = True
-
     def get_absolute_url(self):
         return reverse('gallery_detail', kwargs={'pk': self.pk})
 
@@ -171,8 +179,13 @@ class Gallery(models.Model):
         """Checks if the directory is found."""
         return os.path.exists(self.get_media_directory())
 
+    def get_filter_namenm = getattr(self, 'name', '')
+            nm = nm.lower().replace(' ', '_')\
+                           .replace('#', '--')\
+                           .replace('.', '')
+
     def create_media_folder(self):
-        """Creates the media folder"""
+        """Creates the media folder only if it doesn't exist"""
         if not self.get_media_folder():
             os.system('mkdir %s' % self.get_media_directory())
 
@@ -198,7 +211,8 @@ class Gallery(models.Model):
         os.system('mkdir %s/thumbs/h' % (self.get_media_directory()))
 
     def get_thumbnail(thumb_dir):
-        # if no thumb.jpg file, download the thumb_url
+        """HTTP GET the thumbnail in the thumb_url and 
+        save to the thumbnail directory."""
         if not os.path.exists(thumb_dir):
             if not os.path.exists(thumb_dir):
                 urllib.urlretrieve(getattr(self, 'thumb_url'), '%s' % (thumb_dir))
@@ -210,12 +224,13 @@ class Gallery(models.Model):
                     except:
                         pass
 
-    def resize_pic_gallery(self, force=False):
+    def resize_pic_gallery(self, thumb_dir, force=False):
         """Resizes the thumbnail for the gallery if not found.
         force bool forces it to overwrite and create anyway
         pass any parameters to override the default pic thumb.
         """
         # try to resize only if they dont exist
+        v_thumb_dir = "%s/thumbs/v/thumb.jpg" % (mdir)
         if self.content == 'pic':
             if not os.path.exists(v_thumb_dir):
                 if os.path.getsize(thumb_dir):
@@ -226,11 +241,12 @@ class Gallery(models.Model):
                     except:
                         pass
 
-    def resize_vid_gallery(self, force=False):
-        """Resizes the thumbnail for a vidfeo gallery if not found.
+    def resize_vid_gallery(self, thumb_dir, force=False):
+        """Resizes the thumbnail for a video gallery if not found.
         bool forces it to overwrite the thumbnail.
         width and height keyword arguments will override the defaults.
         """
+        h_thumb_dir = "%s/thumbs/h/thumb.jpg" % (mdir)
         if self.content == 'video':
             if not os.path.exists(h_thumb_dir):
                 if os.path.getsize(thumb_dir):
@@ -241,41 +257,34 @@ class Gallery(models.Model):
                     except:
                         pass
 
-
-
     def save(self):
         # set filtername if not self.filter_name
         if not getattr(self, 'filter_name', None):
-            nm = getattr(self, 'name', '')
-            nm = nm.lower().replace(' ', '_')\
-                           .replace('#', '--')\
-                           .replace('.', '')
-            setattr(self, 'filter_name', nm)
+            setattr(self, 'filter_name', self.get_filter_name())
 
         # auto create the media folder only if the settings say so
-        if GALLERY_AUTO_CREATE_MEDIA_FOLDER:
+        if getattr(self, "create_media_folder", False):
+            # will never override.
             self.create_media_folder()
 
         # if thumbnail URL exists in field and thumb.jpg does not exist.
-        if getattr(self, "fetch_thumbnails", False):
-            if getattr(self, 'thumb_url', None):
-                if getattr(self, "gallery_type", "") == "local":
-                    mdir = self.get_media_directory()
+        if self.get_media_folder():
+            if getattr(self, "fetch_thumbnails", False):
+                if getattr(self, 'thumb_url', None):
+                    if getattr(self, "gallery_type", "") == "local":
+                        mdir = self.get_media_directory()
 
-                    thumb_dir = "%s/thumbs/thumb.jpg" % (mdir)
-                    h_thumb_dir = "%s/thumbs/h/thumb.jpg" % (mdir)
-                    v_thumb_dir = "%s/thumbs/v/thumb.jpg" % (mdir)
+                        thumb_dir = "%s/thumbs/thumb.jpg" % (mdir)
+                        if not os.path.exists('%s/thumbs' % (mdir)):
+                            self.create_thumb_dirs()
 
-                    if not os.path.exists('%s/thumbs' % (mdir)):
-                        self.create_thumb_dirs()
+                        # get the thumbnail from the URL entered
+                        self.get_thumbnail(thumb_dir)
+                        # resize / save them depending on gallery content type
+                        self.resize_pic_gallerythumb_dir)
+                        self.resize_vid_gallery(thumb_dir)
 
-                    # get the thumbnail from the URL entered
-                    self.get_thumbnail(thumb_dir)
-                    # resize / save them depending on gallery content type
-                    self.resize_pic_gallery(h_thumb_dir)
-                    self.resize_vid_gallery(v_thumb_dir)
-                
-                
+        # finally now we can fucking save already....      
         super(Gallery, self).save()
 
 
