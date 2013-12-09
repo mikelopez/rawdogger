@@ -13,6 +13,11 @@ MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
 DEBUG = getattr(settings, "DEBUG", "")
 GALLERY_AUTO_CREATE_MEDIA_FOLDER = getattr(settings, "GALLERY_AUTO_CREATE_MEDIA_FOLDER", False)
 
+THUMB_PIC_WIDTH = getattr(settings, "THUMB_PIC_WIDTH", 100)
+THUMB_PIC_HEIGHT = getattr(settings, "THUMB_PIC_HEIGHT", 140)
+THUMB_VID_WIDTH = getattr(settings, "THUMB_VID_WIDTH", 320)
+THUMB_VID_HEIGHT = getattr(settings, "THUMB_VID_HEIGHT", 220)
+
 LOCAL_TYPE = 'local'
 LOCAL_MIXED = 'local-mix'
 HOSTED_TYPE = 'hosted'
@@ -179,10 +184,12 @@ class Gallery(models.Model):
         """Checks if the directory is found."""
         return os.path.exists(self.get_media_directory())
 
-    def get_filter_namenm = getattr(self, 'name', '')
-            nm = nm.lower().replace(' ', '_')\
-                           .replace('#', '--')\
-                           .replace('.', '')
+    def get_filter_name(self):
+        nm = getattr(self, 'name', '')
+        nm = nm.lower().replace(' ', '_')\
+                        .replace('#', '--')\
+                        .replace('.', '')
+        return nm
 
     def create_media_folder(self):
         """Creates the media folder only if it doesn't exist"""
@@ -219,12 +226,12 @@ class Gallery(models.Model):
                 # retry without the .mini...
                 if os.path.getsize(thumb_dir) == 0:
                     try:
-                        thurl = str(getattr(self, 'thumb_url')
-                        urllib.urlretrieve(thurl).replace('.mini',''), '%s' % (thumb_dir))
+                        thurl = str(getattr(self, 'thumb_url'))
+                        urllib.urlretrieve(str(thurl).replace('.mini',''), '%s' % (thumb_dir))
                     except:
                         pass
 
-    def resize_pic_gallery(self, thumb_dir, force=False):
+    def resize_pic_gallery(self, thumb_dir, force=False, w=THUMB_VID_WIDTH, h=THUMB_VID_HEIGHT):
         """Resizes the thumbnail for the gallery if not found.
         force bool forces it to overwrite and create anyway
         pass any parameters to override the default pic thumb.
@@ -236,12 +243,12 @@ class Gallery(models.Model):
                 if os.path.getsize(thumb_dir):
                     try:
                         im = Image.open(thumb_dir)
-                        imnew = cropped_thumbnail(im, [100, 140])
+                        imnew = cropped_thumbnail(im, [w, h])
                         imnew.save(v_thumb_dir, 'JPEG', quality=100)
                     except:
                         pass
 
-    def resize_vid_gallery(self, thumb_dir, force=False):
+    def resize_vid_gallery(self, thumb_dir, force=False, w=THUMB_VID_WIDTH, h=THUMB_VID_HEIGHT):
         """Resizes the thumbnail for a video gallery if not found.
         bool forces it to overwrite the thumbnail.
         width and height keyword arguments will override the defaults.
@@ -252,7 +259,7 @@ class Gallery(models.Model):
                 if os.path.getsize(thumb_dir):
                     try:
                         im = Image.open(thumb_dir)
-                        imnew = cropped_thumbnail(im, [320, 220])
+                        imnew = cropped_thumbnail(im, [w, h])
                         imnew.save(h_thumb_dir, 'JPEG', quality=100)
                     except:
                         pass
@@ -273,15 +280,13 @@ class Gallery(models.Model):
                 if getattr(self, 'thumb_url', None):
                     if getattr(self, "gallery_type", "") == "local":
                         mdir = self.get_media_directory()
-
                         thumb_dir = "%s/thumbs/thumb.jpg" % (mdir)
                         if not os.path.exists('%s/thumbs' % (mdir)):
                             self.create_thumb_dirs()
-
                         # get the thumbnail from the URL entered
                         self.get_thumbnail(thumb_dir)
                         # resize / save them depending on gallery content type
-                        self.resize_pic_gallerythumb_dir)
+                        self.resize_pic_gallery(thumb_dir)
                         self.resize_vid_gallery(thumb_dir)
 
         # finally now we can fucking save already....      
