@@ -56,7 +56,7 @@
     {% for i in object_list %}
     <tr>
 			<td><b>{{i.id}}</b></td>
-			<td><a href="{% url 'galleries_view' %}?tag={{i.id}}">Add Galleries</a></td>
+			<td><a href="{% url 'add_tags_to_gallery' pk=i.id %}">Add Galleries</a></td>
       <td><a href="{% url 'tags_detail' pk=i.id %}">{{ i.name }}</a></td>
       <td>{{ i.cache_picgalleries_count }} </td>
       <td>{{ i.cache_vidgalleries_count }} </td>

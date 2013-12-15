@@ -1,0 +1,26 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Tag Gallery View{% endblock %}
+{% block heading %}{{object.name|capfirst}} Galleries{% endblock %}
+
+{% block table_list %}
+
+
+   
+
+    <div class="linebreak10"></div>
+    <hr />
+    <h2>Video Galleries</h2>
+    <div class="linebreak10"></div>
+
+   
+
+
+{% endblock %}
+
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Go Back" 
+                onclick="window.location='{% url 'tags_view' %}';"/>
+{% endblock %}
+

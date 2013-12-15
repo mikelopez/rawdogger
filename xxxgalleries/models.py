@@ -317,6 +317,12 @@ class Providers(models.Model):
     def count_galleries(self):
         return Gallery.objects.filter(provider=self).count()
     @property
+    def count_pic_galleries(self):
+        return Gallery.objects.filter(content='pic', provider=self).count()
+    @property
+    def count_vid_galleries(self):
+        return Gallery.objects.filter(content='video', provider=self).count()
+    @property
     def count_banners(self):
         return Banners.objects.filter(provider=self).count()
 
@@ -349,6 +355,7 @@ class ProviderWebsites(models.Model):
 
 class ProviderWebsiteLinks(models.Model):
     """Manage the provider website links."""
+    program_type = models.ForeignKey('ProgramTypes')
     provider = models.ForeignKey('Providers')
     website = models.ForeignKey('ProviderWebsites')
     name = models.CharField(max_length=30)

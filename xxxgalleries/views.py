@@ -91,13 +91,17 @@ class GalleryView(StaffuserRequiredMixin, ListView):
     paginate_by = 16
     def get_queryset(self, **kwargs):
         if self.request.GET.get('content', 'pic') == "pic":
-            self.paginate_by = 40
+            self.paginate_by = 21
         return Gallery.objects.filter(content=self.request.GET.get('content', 'pic')).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(GalleryView, self).get_context_data(**kwargs)
         context['content'] = self.request.GET.get('content', 'pic')
         context['tags'] = Tags.objects.all().order_by('name')
+        try:
+            context['tag_selected'] = Tags.objects.get(pk=self.request.GET.get('tag', None))
+        except (Tags.DoesNotExist, ValueError):
+            context['tag_selected'] = None
         return context
 
 
@@ -216,18 +220,10 @@ class TagsDetailView(StaffuserRequiredMixin, DetailView):
         object = super(TagsDetailView, self).get_object(**kwargs)
         return object
 
-
-class AddTagToGallery(StaffuserRequiredMixin, View):
-    """ Add a tag to a gallery. """
-    def get(self, request):
-        """Sends back the form to the user and renders the template."""
-        raise Http404
-
-    def post(self, request):
-        """Process the post request. Boat is required in the post data."""
-        gallery = request.POST.get('gallery_id')
-        tag = request.POST.get('tag_name')
+class ViewBase(View):
+    def tagthatbitch(self, request, gallery, tag, return_type="html", action=""):
         tagsplit = tag.split(',')
+        data = {'result': 'ok', 'message': 'ok'}
         for tags in tagsplit:
             if tags[:1] == ' ':
                 tags = tags[1:]
@@ -236,34 +232,50 @@ class AddTagToGallery(StaffuserRequiredMixin, View):
             try:
                 g = Gallery.objects.get(pk=int(gallery))
             except (ValueError, Gallery.DoesNotExist):
-                raise Http404
-            g.tags.add(obj)
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                if return_type == 'html':
+                    raise Http404
+                else:
+                    data['result'] = 'error'
+                    data['message'] = 'No gallery found with id %s' % gallery
+            if action == 'add':
+                g.tags.add(obj)
+            if action == 'remove': 
+                g.tags.remove(obj)
+        if return_type == "json":
+            return HttpResponse(simplejson.dumps(data), mimetype="application/json")
+        if return_type == "html":
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-class RemoveTagFromGallery(StaffuserRequiredMixin, View):
+class AddTagToGallery(StaffuserRequiredMixin, ViewBase):
+    """ Add a tag to a gallery. """
+            
+    def get(self, request):
+        """Sends back the form to the user and renders the template."""
+        gallery = request.GET.get('gallery_id')
+        tag = request.GET.get('tag_name')
+        return self.tagthatbitch(request, gallery, tag, return_type='json', action='add')
+
+    def post(self, request):
+        """Process the post request. Boat is required in the post data."""
+        gallery = request.POST.get('gallery_id')
+        tag = request.POST.get('tag_name')
+        return self.tagthatbitch(request, gallery, tag, action='add')
+
+
+class RemoveTagFromGallery(StaffuserRequiredMixin, ViewBase):
     """Add a tag to a gallery """
     def get(self, request):
         """Sends back the form to the user and renders the template."""
-        raise Http404
+        gallery = request.GET.get('gallery_id')
+        tag = request.GET.get('tag_name')
+        return self.tagthatbitch(request, gallery, tag, return_type='json', action='remove')
 
     def post(self, request):
         """Process the post request. Boat is required in the post data."""
         gallery = request.POST.get('gallery_id')
         tag = request.POST.get('tag_name')
-        tagsplit = tag.split(',')
-        for tags in tagsplit:
-            if tags[:1] == ' ':
-                tags = tags[1:]
-            tag_name = str(tags).lower()
-            obj, created = Tags.objects.get_or_create(name=tag_name)
-            try:
-                g = Gallery.objects.get(pk=int(gallery))
-            except (ValueError, Gallery.DoesNotExist):
-                raise Http404
-            g.tags.remove(obj)
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
+        return self.tagthatbitch(request, gallery, tag, action='remove')
 
 
 class BannersView(StaffuserRequiredMixin, ListView):
@@ -280,10 +292,10 @@ class UpdateBanners(StaffuserRequiredMixin, UpdateView):
     """ Update view """
     model = Banners
     form_class = BannersForm
-    template_name = 'xxxgalleries/banners_update\.html'
+    template_name = 'xxxgalleries/banners_update.html'
 
     def get_object(self, queryset=None):
-        obj = Bannerss.objects.get(id=self.kwargs['pk'])
+        obj = Banners.objects.get(id=self.kwargs['pk'])
         return obj
 
     def form_valid(self, form):
