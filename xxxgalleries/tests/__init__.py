@@ -1,2 +1,2 @@
-from test_models import TestBaseModels
-from test_media import TestMediaDirectories
+#from test_media import TestMediaDirectories
+from test_providers import TestProviders

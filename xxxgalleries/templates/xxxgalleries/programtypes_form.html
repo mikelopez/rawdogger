@@ -1,0 +1,28 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Add a Program Type{% endblock %}
+{% block heading %}Add a Program Type{% endblock %}
+
+{% block additional_css_overrides %}
+  <style type="text/css">
+    .container { width:940px; }
+  </style>
+{% endblock %}
+
+{% block form_submit_to %}{% url "program_types_add" %}{% endblock %}
+{% block add_provider_form %}
+    <table width="650">
+      {{form.as_table}}
+    </table>
+    <input type="submit" class="btn btn-success" value="Add Account" />
+ {% endblock %}
+
+{% block action_button %}
+	{% if account_id %}
+    	<input type="button" class="btn btn-info pull-right" value="Back to Accounts" 
+                onclick="window.location='{% url 'provider_accounts_detail' pk=account_id %}';"/>
+    {% else %}
+    	<input type="button" class="btn btn-info pull-right" value="Back to Account" 
+                onclick="window.location='{% url 'provider_accounts_view' %}';"/>
+    {% endif %}
+{% endblock %}

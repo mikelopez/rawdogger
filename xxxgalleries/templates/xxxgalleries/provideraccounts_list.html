@@ -15,16 +15,20 @@
 {% block table_list %}
   
   <table class="table table-bordered" style="width:930px;font-size:12px;">
-    <tr><td>Provider</td><td>Email</td><td>Username</td><td>Password</td>
+    <tr class="alert alert-warning" style="font-weight:bold;"><td>Provider</td><td>Email</td><td>Username</td><td>Password</td>
       <td>Website Registered</td><td>CCBill</td>
       <td>Affiliate ID</td><td>LINK ID</td>
     </tr>
     {% for i in object_list %}
     <tr>
-      <td><a href="{% url 'provider_detail' pk=i.provider.id %}">{{ i.provider.name }}</a></td>
+      <td>
+        <a href="{% url 'provider_accounts_detail' pk=i.id %}">
+          {{ i.provider.name }}
+        </a>
+      </td>
       <td>{{ i.email_registered }}</td>
       <td>{{ i.username }}</td>
-      <td>{{ i.password }}</td>
+      <td>*****</td>
       <td>{{ i.website_registered }} </td>
       <td>{{ i.ccbill }}</td>
       <td>{{ i.affiliate_id }}</td>

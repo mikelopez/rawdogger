@@ -3,6 +3,12 @@
 {% block title %}All Galleries{% endblock %}
 {% block heading %}Rawdogger{% endblock %}
 
+{% block additional_css_overrides %}
+<style type="text/css">
+	.container { width:900px;}
+</style>
+{% endblock %}
+
 {% block table_list %}
 
 <a style="width:120px;" class="btn btn-large btn-danger" href="{% url 'providers_view' %}"><b>Providers</b></a>

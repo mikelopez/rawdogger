@@ -1,0 +1,68 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Provider Account {{object.provider.name}} {% endblock %}
+{% block heading %}Account on {{object.provider.name}}{% endblock %}
+{% block additional_css_overrides %}
+  <style type="text/css">
+    .container { width:940px; }
+    .danger > td, .table > tfoot > .danger > td, .table > thead > .danger > th, .table > tbody > .danger > th, .table > tfoot > .danger > th {
+    background-color: #ee5f5b;
+    }
+  </style>
+{% endblock %}
+
+
+{% block detail_view %}
+
+
+<div class="pull-left" style="width:500px;">
+  <h3>Account Details</h3>
+  <table class="table table-bordered table-striped">
+    <tr>
+      <td><b>Website</b></td><td>{{object.website_registered}}</td>
+    </tr>
+    <tr>
+      <td><b>Email</b></td><td>{{object.email_registered}}</td>
+    </tr>
+    <tr>
+      <td><b>Username</b></td><td>{{object.username}}</td>
+    </tr>
+    <tr>
+      <td><b>Password</b></td><td>{{object.password}}</td>
+    </tr>
+    <tr>
+      <td><b>CCBILL ID</b></td><td>{{object.ccbill}}</td>
+    </tr>
+    <tr>
+      <td><b>Affiliate ID</b></td><td>{{object.affiliate_id}}</td>
+    </tr>
+
+  </table>
+</div>
+ 
+<div class="pull-left" style="width:400px;margin-left:20px;">
+  <h3 class="pull-left">Program Types</h3>
+  <a href="{% url 'program_types_add' %}?account_id={{object.id}}" class="btn btn-danger pull-right" style="margin-top:10px;">Add</a> 
+  <table class="table table-bordered table-striped">
+    <tr style="font-weight:bold;"><td></td><td>Name</td><td>Link ID</td></tr>
+  {% for i in program_types %}
+    <tr>
+        <td><a href="{% url 'program_types_update' pk=i.id %}">Edit</a></td><td>{{i.name}}</td><td>{{i.link_id}}</td>
+    </tr>
+  {% endfor %}
+  </table>
+  
+</div>
+    
+    
+
+
+{% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Back to Provider Accounts" 
+                onclick="window.location='{% url 'provider_accounts_view' %}';"/>
+    <br /><br />
+
+{% endblock %}
+

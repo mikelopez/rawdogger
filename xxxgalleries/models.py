@@ -27,7 +27,7 @@ NULLBOOL_TRUE = {'blank': True, 'null': True, 'default': False}
 
 from resize import *
 
-LINK_ID = "#AFF_ID#"
+LINK_ID = "#AFFILIATE_ID#"
 
 class GalleryItem(models.Model):
     """
@@ -305,6 +305,13 @@ class Providers(models.Model):
      - ccbill (optional)
      - notes
     """
+    name = models.CharField(max_length=30)
+    website = models.CharField(blank=True, null=True, max_length=150)
+    login_url = models.CharField(max_length=200, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+    logo = models.TextField(blank=True, null=True)
+    class Meta:
+        ordering = ['name']
     def __str__(self):
         return str(self.name)
     def __unicode__(self):
@@ -326,11 +333,7 @@ class Providers(models.Model):
     def count_banners(self):
         return Banners.objects.filter(provider=self).count()
 
-    name = models.CharField(max_length=30)
-    website = models.CharField(blank=True, null=True, max_length=150)
-    login_url = models.CharField(max_length=200, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-    logo = models.TextField(blank=True, null=True)
+
 
 class ProviderAccounts(models.Model):
     """Manage the accounts registered for a provider since they 
@@ -343,36 +346,64 @@ class ProviderAccounts(models.Model):
     website_registered = models.CharField(max_length=200, blank=True, null=True)
     ccbill = models.CharField(max_length=20, blank=True, null=True)
     affiliate_id = models.CharField(max_length=20, blank=True, null=True)
-    link_id = models.CharField(max_length=30, blank=True, null=True)
+    class Meta:
+        ordering = ['provider']
     def get_absolute_url(self):
         return reverse('provider_accounts_detail', kwargs={'pk': self.pk})
-
+    def __str__(self):
+        return str('%s - %s' % (self.provider.name, self.email_registered))
+    def __unicode__(self):
+        return unicode('%s - %s' % (self.provider.name, self.email_registered))
 
 class ProviderWebsites(models.Model):
-    """Manage the websites that a provider can promote."""
+    """
+    Add all the providers sites once only.
+    Create websitelinks to point to this website 
+    since there can be multiple links per one site.
+    Also keep track for promotional reasons
+    """
     provider = models.ForeignKey('Providers')
-    domain = models.CharField(max_length=200)
+    name = models.CharField(max_length=50)
+    domain = models.TextField(blank=True, null=True)
+    logo = models.TextField(blank=True, null=True)
 
 class ProviderWebsiteLinks(models.Model):
-    """Manage the provider website links."""
+    """Manage the provider website links.
+    We create unique links over to the promotional websites 
+    that we have listed to keep track of which ones have links 
+    and which ones do not. """
     program_type = models.ForeignKey('ProgramTypes')
-    provider = models.ForeignKey('Providers')
     website = models.ForeignKey('ProviderWebsites')
     name = models.CharField(max_length=30)
     url = models.CharField(max_length=200)
+    def save(self):
+        setattr(self, 'provider', self.website.provider)
+        super(ProviderWebsiteLinks, self).save()
 
 class ProgramTypes(models.Model):
     """ Keep track of the program types for 
     a certain provider. Program types are e.g:
     $35 dollar pps, per signups, per free joins, etc
     """
-    provider = models.ForeignKey("Providers")
     name = models.CharField(max_length=15)
+    link_id = models.CharField(max_length=100, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
+    account = models.ForeignKey("ProviderAccounts")
+    provider = models.ForeignKey('Providers')
+    def __str__(self):
+        return str("%s - %s" % (self.name, self.provider.email_registered))
+    def __unicode__(self):
+        return unicode("%s - %s" % (self.name, self.provider.email_registered))
+    def get_absolute_url(self):
+        return reverse('provider_accounts_detail', kwargs={'pk': self.account.id})
+    def save(self):
+        setattr(self, 'provider', self.account.provider)
+        super(ProgramTypes, self).save()
+
 
 
 class Tags(models.Model):
-    """Hashtag or categorize a gallery"""
+    """Hashtag or categorizes a gallery"""
     name = models.CharField(max_length=50)
     cache_picgalleries_count = models.IntegerField(default=0)
     cache_vidgalleries_count = models.IntegerField(default=0)
@@ -461,7 +492,8 @@ class Banners(models.Model):
 
 class PicTagFaces(models.Model):
     """
-    Contains the gallery reference for a main tag.
+    Uses the thumbnail of referenced picture 
+    gallery to show for a specific tag
     """
     gallery = models.ForeignKey('Gallery')
     tag = models.ForeignKey('Tags')
@@ -472,7 +504,8 @@ class PicTagFaces(models.Model):
 
 class VidTagFaces(models.Model):
     """
-    Contains the gallery reference for a main tag.
+    Uses the thumbnail of referenced video 
+    gallery to show for a specific tag
     """
     gallery = models.ForeignKey('Gallery')
     tag = models.ForeignKey('Tags')

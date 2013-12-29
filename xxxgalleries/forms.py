@@ -1,7 +1,13 @@
 from django import forms 
 from django.forms import ModelForm
-from models import Gallery, Providers, Banners, ProviderAccounts
+from models import Gallery, Providers, Banners, ProviderAccounts, ProgramTypes, \
+                    ProviderWebsites, ProviderWebsiteLinks
 
+
+class BaseForm(ModelForm):
+    """Providers Custom form"""
+    def __init__(self, *args, **kwargs):
+        super(BaseForm, self).__init__(*args, **kwargs)
 
 class GalleryForm(ModelForm):
     """Gallery Custom form"""
@@ -10,33 +16,35 @@ class GalleryForm(ModelForm):
         exclude = ('tags', 'thumb_upload', 
                    'banners', 'filter_name')
 
-    def __init__(self, *args, **kwargs):
-        super(GalleryForm, self).__init__(*args, **kwargs)
-
-
-class ProvidersForm(ModelForm):
-    """Gallery Custom form"""
+class ProvidersForm(BaseForm):
+    """Providers Custom form"""
     class Meta:
         model = Providers
 
-    def __init__(self, *args, **kwargs):
-        super(ProvidersForm, self).__init__(*args, **kwargs)
-        
+class ProviderWebsitesForm(BaseForm):
+    """Program types Custom form"""
+    class Meta:
+        model = ProviderWebsites
 
-class ProviderAccountsForm(ModelForm):
-    """Gallery Custom form"""
+class ProviderWebsiteLinksForm(BaseForm):
+    """Program types Custom form"""
+    class Meta:
+        model = ProviderWebsiteLinks
+
+class ProgramTypesForm(BaseForm):
+    """Program types Custom form"""
+    class Meta:
+        model = ProgramTypes 
+        exclude = ('provider',) 
+
+class ProviderAccountsForm(BaseForm):
+    """Provider accoutns Custom form"""
     class Meta:
         model = ProviderAccounts
 
-    def __init__(self, *args, **kwargs):
-        super(ProviderAccountsForm, self).__init__(*args, **kwargs)
-
-
-class BannersForm(ModelForm):
+class BannersForm(BaseForm):
     """Banners Custom form"""
     class Meta:
         model = Banners
 
-    def __init__(self, *args, **kwargs):
-        super(BannersForm, self).__init__(*args, **kwargs)
         

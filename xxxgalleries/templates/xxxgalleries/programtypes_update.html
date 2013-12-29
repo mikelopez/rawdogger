@@ -1,0 +1,21 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Program types Update{% endblock %}
+{% block heading %}Update Program Types{% endblock %}
+
+
+{% block form_submit_to %}
+	{% url "program_types_update" pk=object.id %}
+{% endblock %}
+
+{% block add_gallery_form %}
+    <table width="650" cellpadding="10" cellspacing="10">
+      {{form.as_table}}
+    </table>
+    <input type="submit" class="btn btn-success" value="Update Provider" />
+ {% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="Go back" 
+                onclick="window.location='{% url 'provider_accounts_detail' pk=object.account.id %}';"/>
+{% endblock %}

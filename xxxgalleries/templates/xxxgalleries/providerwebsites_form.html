@@ -1,0 +1,27 @@
+{% extends "xxxgalleries/base.html" %}
+
+{% block title %}Add a Provider Website{% endblock %}
+{% block heading %}Add a Provider Website{% endblock %}
+
+{% block additional_css_overrides %}
+  <style type="text/css">
+    .container { width:940px; }
+    .danger > td, .table > tfoot > .danger > td, .table > thead > .danger > th, .table > tbody > .danger > th, .table > tfoot > .danger > th {
+    background-color: #ee5f5b;
+    }
+  </style>
+{% endblock %}
+
+
+{% block form_submit_to %}{% url "provider_websites_add" %}{% endblock %}
+{% block add_provider_form %}
+    <table width="650">
+      {{form.as_table}}
+    </table>
+    <input type="submit" class="btn btn-success" value="Add Provider Website" />
+ {% endblock %}
+
+{% block action_button %}
+    <input type="button" class="btn btn-info pull-right" value="View Websites" 
+                onclick="window.location='{% url 'provider_websites_view' %}';"/>
+{% endblock %}

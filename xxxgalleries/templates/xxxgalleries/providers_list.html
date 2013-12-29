@@ -38,7 +38,7 @@
     </tr>
       {% for pa in i.provideraccounts_set.select_related %}
         <tr>
-          <td></td>
+          <td><a href="{% url 'provider_accounts_detail' pk=pa.pk %}">View Account</a></td>
           <td></td>
           <td></td>
           <td></td>
